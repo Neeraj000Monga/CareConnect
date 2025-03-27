@@ -14,9 +14,12 @@ import {
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
-import UploadImage from "../../assets/about_image.png";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { signupUser } from "../../redux/signupSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const specializations = [
   "Cardiology",
@@ -37,13 +40,14 @@ const TextFields = styled(TextField)({
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.signup) || {};
 
   const [role, setRole] = useState(localStorage.getItem("userRole") || "");
   useEffect(() => {
     localStorage.setItem("userRole", role);
   }, [role]);
 
-  console.log("rolerole", role);
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -60,36 +64,56 @@ const Signup = () => {
     profilePic: null,
   });
 
-  // ======
-  const apiUrl =
-    role === "patient"
-      ? "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient"
-      : "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor";
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(signupUser({ formData, role }));
+    navigate("/apruble");
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-TYpe": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-  };
-  // =======
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setFormData({ ...formData, profilePic: file });
+  //   }
+  // };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, profilePic: file });
+    if (!file) return;
+
+    // Show a temporary preview before upload
+    const previewUrl = URL.createObjectURL(file);
+    setFormData((prevData) => ({ ...prevData, profilePic: previewUrl }));
+
+    const imageData = new FormData();
+    imageData.append("file", file);
+    imageData.append("upload_preset", "careconnet"); // Ensure this is your correct preset
+    imageData.append("cloud_name", "careconnet2"); // Your Cloudinary cloud name
+
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/careconnet2/image/upload",
+        imageData
+      );
+      const imageUrl = response.data.secure_url;
+
+      // Update formData with uploaded image URL
+      setFormData((prevData) => ({ ...prevData, profilePic: imageUrl }));
+    } catch (error) {
+      console.error(
+        "Error uploading image:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -114,11 +138,7 @@ const Signup = () => {
               />
               <label htmlFor="upload-image">
                 <Avatar
-                  src={
-                    formData.profilePic
-                      ? URL.createObjectURL(formData.profilePic)
-                      : UploadImage
-                  }
+                  src={formData.profilePic}
                   sx={{
                     width: 100,
                     height: 100,
@@ -383,6 +403,7 @@ const Signup = () => {
                 />
               </FormGroup>
               <Button
+                onClick={handleSubmit}
                 sx={{
                   width: "200px",
                   background: "#000",

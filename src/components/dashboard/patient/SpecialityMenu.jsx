@@ -5,7 +5,7 @@ import Pediatricians from "../../../assets/Pediatricians.svg";
 import Dermatologist from "../../../assets/Dermatologist.svg";
 import Gastroenterologist from "../../../assets/Gastroenterologist.svg";
 import { Link } from "react-router-dom";
-import { Box, Typography, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 
 const specialityData = [
   {
@@ -36,15 +36,19 @@ const specialityData = [
 
 const SpecialityMenu = () => {
   return (
-    <Stack >
-      <Typography variant="h6" fontWeight="bold" ml={2}>Find by Speciality</Typography>
+    <Box>
+      <Typography variant="h6" fontWeight="bold" ml={2}>
+        Find by Speciality
+      </Typography>
 
-      <Box
-        my={1}
-        sx={{ scrollbarWidth: "none", overflowX: "auto", display: "flex", width:'100%'}}
+      <Stack
+        sx={{
+          flexDirection: "row",
+          overflowX: "scroll",
+        }}
       >
         {specialityData.map((item, index) => (
-          <Box key={index}>
+          <Box key={index} sx={{ width: "120px" }}>
             <Link
               // to={`/doctors/${item.speciality}`}
               onClick={() => window.scrollTo(0, 0)}
@@ -58,7 +62,6 @@ const SpecialityMenu = () => {
                 sx={{
                   minWidth: "110px",
                   cursor: "pointer",
-                  marginLeft:'20px',
                   transition: "transform 0.5s",
                   "&:hover": { transform: "translateY(-10px)" },
                 }}
@@ -67,7 +70,7 @@ const SpecialityMenu = () => {
                   component="img"
                   src={item.image}
                   alt="Speciality"
-                  sx={{ width: { xs: 40, sm: 66 }, mb: 1 ,height:'85px'}}
+                  sx={{ width: { xs: 40, sm: 66 }, mb: 1, height: "85px" }}
                 />
                 <Typography variant="body2" sx={{ fontSize: "12px" }}>
                   {item.speciality}
@@ -76,8 +79,8 @@ const SpecialityMenu = () => {
             </Link>
           </Box>
         ))}
-      </Box>
-    </Stack>
+      </Stack>
+    </Box>
   );
 };
 

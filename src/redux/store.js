@@ -1,9 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from "../redux/createSlice"; // Example reducer
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "../redux/authSlice";
+import signupReducer from "../redux/signupSlice"; // FIXED IMPORT
 
 const store = configureStore({
   reducer: {
-    counter: counterReducer, // Add your reducers here
+    auth: authReducer,
+    signup: signupReducer, // Ensure it's 'signup' and not something else
   },
 });
 

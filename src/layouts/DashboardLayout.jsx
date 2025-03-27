@@ -14,6 +14,7 @@ import DoctorsLists from "../components/dashboard/admin/DoctorsLists";
 import PatientLists from "../components/dashboard/admin/PatientLists";
 import DoctorsApproval from "../components/dashboard/admin/DoctorsApproval";
 import DetailsPage from "../components/dashboard/admin/DetailsPage";
+import Settability from "../components/dashboard/patient/Settability";
 
 const DashboardLayout = ({ role }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -39,6 +40,7 @@ const DashboardLayout = ({ role }) => {
               <Route path="myAppointments" element={<PatientAppointments />} />
               <Route path="bookAppointments" element={<BookAppointment />} />
               <Route path="profile" element={<PatientProfile />} />
+              <Route path="Settability" element={<Settability />} />
             </>
           ) : role === "doctor" ? (
             <>

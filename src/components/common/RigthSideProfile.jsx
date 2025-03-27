@@ -40,7 +40,7 @@ const RightSideProfile = () => {
             objectFit: "cover",
           }}
         />
-        <Typography fontWeight="bold">Vishal</Typography>
+        <Typography fontWeight="bold">Neeraj Monga</Typography>
         <Typography sx={{ fontSize: 14, color: "gray" }}>
           26 Years, Faridabad
         </Typography>

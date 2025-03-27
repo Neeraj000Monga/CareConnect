@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import MuiDrawer from "@mui/material/Drawer";
@@ -20,7 +20,7 @@ import { AppBar, Button, Container, Toolbar } from "@mui/material";
 import CareConnectLogo from '../../assets/CareConnectLogo.png'
 import { RiFileList3Fill } from "react-icons/ri";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -41,7 +41,7 @@ const closedMixin = (theme) => ({
   overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+    width: `calc(${theme.spacing(7)} + 1px)`,
   },
   backgroundColor: "#fff", // Matching navbar
   color: "#000",
@@ -102,6 +102,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         name: "Profile",
         icon: <AccountCircleIcon size={20} />,
         path: "/patient/profile",
+      },
+      {
+        name: "Settability",
+        icon: <AccountCircleIcon size={20} />,
+        path: "/patient/Settability",
       },
     ],
     doctor: [
@@ -213,13 +218,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         open={open}
         sx={{
           "& .MuiDrawer-paper": {
-            top: "68px",
             zIndex: 0,
-            background: "#fff",
+            top: "66px",
+            height: "90vh",
             display: "flex",
+            background: "#fff",
             flexDirection: "column",
             justifyContent: "space-between",
-            height: "100vh",
           },
         }}
       >
@@ -229,7 +234,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <ListItemButton
                 onClick={() => navigate(item.path)}
                 sx={{
-                  px: 3,
+                  px: 2,
                   py: 1,
                   minHeight: 48,
                   borderRight:
@@ -239,8 +244,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   justifyContent: open ? "initial" : "center",
                   color: location.pathname === item.path ? "#000b6d" : "#000",
                   backgroundColor:
-                    location.pathname === item.path ? "#f2f3ff" : "transparent",
-                  "&:hover": { backgroundColor: "#f2f3ff" },
+                    location.pathname === item.path ? "#eaecfb" : "transparent",
+                  "&:hover": { backgroundColor: "#e2e5ff" },
                 }}
               >
                 <ListItemIcon
@@ -248,7 +253,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     minWidth: 0,
                     color: location.pathname === item.path ? "#000b6d" : "#000",
                     justifyContent: "center",
-                    mr: open ? 3 : "auto",
+                    mr: open ? 2 : "auto",
                   }}
                 >
                   {item.icon}

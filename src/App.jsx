@@ -12,6 +12,7 @@ import Footer from "./components/common/Footer";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import Apruble from "./components/dashboard/doctor/Apruble";
 
 function App() {
   const getUserRole = () => localStorage.getItem("userRole");
@@ -36,6 +37,7 @@ function App() {
             <Route path="/roleSelection" element={<RoleSelection />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Signup />} />
+            <Route path="/apruble" element={<Apruble />} />
 
             {/* Protected Dashboard Routes */}
             {userRole === "patient" && (
