@@ -1,9 +1,8 @@
+import { useEffect, useState } from "react";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { MdNotifications } from "react-icons/md";
-import doc1 from "../../assets/doc1.png";
 import doc9 from "../../assets/doc9.png";
 import doc13 from "../../assets/doc13.png";
-import React from "react";
 
 const alerts = [
   { type: "New Appointment", color: "#2563eb" },
@@ -12,192 +11,276 @@ const alerts = [
 ];
 
 const RightSideProfile = () => {
-  const role = 'patient'
-  // const role = "doctor"; 
+  const [profile, setProfile] = useState(null);
 
+  const userRole = localStorage.getItem("userRole");
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user2"));
+    if (!storedUser) return;
+
+    fetch(
+      userRole === "patient"
+        ? `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${storedUser}`
+        : `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor/${storedUser}`
+    )
+      .then((res) => res.json())
+      .then((data) => setProfile(data))
+      .catch((err) => console.error("Error fetching profile:", err));
+  }, []);
+
+  if (!profile) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
-    <Box>
-      <Typography fontWeight="bold" color="#616161">Profile</Typography>
-
-      {/* Profile Section */}
-      <Box
-        sx={{
-          mt: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={doc1}
-          alt="Profile"
-          style={{
-            background: "pink",
-            borderRadius: "50%",
-            height: 80,
-            width: 80,
-            objectFit: "cover",
-          }}
-        />
-        <Typography fontWeight="bold">Neeraj Monga</Typography>
-        <Typography sx={{ fontSize: 14, color: "gray" }}>
-          26 Years, Faridabad
+    <Stack flexDirection="row">
+      <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+      <Stack sx={{ width: "100%" }}>
+        <Typography mt={3} fontWeight="bold" color="#616161">
+          Profile
         </Typography>
-      </Box>
 
-      {/* Health Info Section */}
-      <Box
-  sx={{
-    my: 1,
-    display: "flex",
-    gap: 2,
-    justifyContent: "space-around",
-    alignItems: "center",
-  }}
->
-  {(role === "patient"
-    ? [
-        { label: "Weight", value: "72" },
-        { label: "Height", value: "172" },
-        { label: "Blood Group", value: "B+" },
-      ]
-    : [
-        { label: "Overall Rating", value: "4.8" },
-        { label: "Total Patients", value: "120" },
-      ]
-  ).map(({ label, value }, index, array) => (
-    <Box
-      key={label}
-      sx={{ display: "flex", alignItems: "center", gap: 2 }}
-    >
-      <Box sx={{ textAlign: "center" }}>
-        <Typography color="#089bab" fontWeight={600}>
-          {label}
-        </Typography>
-        <Typography fontWeight={600}>{value}</Typography>
-      </Box>
-      {index < array.length - 1 && (
-        <Divider orientation="vertical" flexItem sx={{ height: "40px" }} />
-      )}
-    </Box>
-  ))}
-</Box>
+        {/* Profile Section */}
+        <Stack sx={{ mt: 1, alignItems: "center" }}>
+          <img
+            src={profile?.image || doc13}
+            alt="Profile"
+            style={{
+              borderRadius: "50%",
+              height: 80,
+              width: 80,
+              objectFit: "cover",
+            }}
+          />
+          <Typography fontWeight="bold">{profile.name}</Typography>
+          <Typography sx={{ fontSize: 14, color: "gray" }}>
+            {profile.age} Years, {profile.location}
+          </Typography>
+        </Stack>
 
-      <Divider />
-
-      {/* Notifications Section */}
-      <Stack sx={{ padding: "10px 15px 0", gap: "10px" }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <MdNotifications color="#eab308" />
-          <Typography fontWeight={600}>Alerts</Typography>
-        </Box>
-
-        {alerts.map(({ type, color }) => (
-          <Box
-            key={type}
+        {/* Health Info Section */}
+        {userRole === "patient" ? (
+          <Stack
             sx={{
-              height: 60,
-              display: "flex",
+              my: 1,
+              gap: 2,
+              flexDirection: "row",
+              justifyContent: "space-around",
               alignItems: "center",
-              justifyContent: "center",
             }}
           >
-            <Stack
-              flexDirection="row"
+            <Box
               sx={{
-                width: "100%",
+                display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
+                gap: 2,
+                width: "100%",
               }}
             >
-              <Stack flexDirection="row" gap={2}>
-                <img
-                  src={doc13}
-                  alt="Alert Icon"
-                  width={48}
-                  height={48}
-                  style={{ borderRadius: "50%", background: "gray" }}
-                />
-                <Box>
-                  <Typography
-                    sx={{ fontWeight: 600, whiteSpace: "nowrap" }}
-                    color={color}
-                  >
-                    {type}
+              <Stack
+                sx={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  width: "100%",
+                }}
+              >
+                <Box textAlign="center">
+                  <Typography color="#089bab" fontWeight={600}>
+                    Weight
                   </Typography>
-                  <Stack flexDirection="row" alignItems="center" gap={0.5}>
-                    <Typography
-                      sx={{ fontSize: 11, color: "#696868", fontWeight: 600 }}
-                    >
-                      Andrew Grey
-                    </Typography>
-                    <Box
-                      sx={{
-                        background: "#ccc",
-                        width: 2,
-                        height: 2,
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <Typography
-                      sx={{ fontSize: 11, color: "#9b9a9a", fontWeight: 600 }}
-                    >
-                      30 min ago
-                    </Typography>
-                  </Stack>
+                  <Typography fontWeight={600}>{profile.weight}</Typography>
+                </Box>
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ height: "40px" }}
+                />
+                <Box textAlign="center">
+                  <Typography color="#089bab" fontWeight={600}>
+                    Height
+                  </Typography>
+                  <Typography fontWeight={600}>{profile?.height}</Typography>
+                </Box>
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ height: "40px" }}
+                />
+                <Box textAlign="center">
+                  <Typography color="#089bab" fontWeight={600}>
+                    Blood Group
+                  </Typography>
+                  <Typography fontWeight={600}>
+                    {profile?.bloodgroup}
+                  </Typography>
                 </Box>
               </Stack>
-              {/* <Typography sx={{ fontSize: 11, color: "#9b9a9a", fontWeight: 500 }}>30 min ago</Typography> */}
-            </Stack>
-          </Box>
-        ))}
-      </Stack>
+            </Box>
+          </Stack>
+        ) : (
+          <Stack
+            sx={{
+              my: 1,
+              gap: 2,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                width: "100%",
+              }}
+            >
+              <Stack
+                sx={{
+                  gap: "20px",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <Box textAlign="center">
+                  <Typography color="#089bab" fontWeight={600}>
+                    License No
+                  </Typography>
+                  <Typography fontWeight={600}>{profile?.licenseNo}</Typography>
+                </Box>
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ height: "40px" }}
+                />
+                <Box textAlign="center">
+                  <Typography color="#089bab" fontWeight={600}>
+                    Fees
+                  </Typography>
+                  <Typography fontWeight={600}>{profile?.fees}</Typography>
+                </Box>
+              </Stack>
+            </Box>
+          </Stack>
+        )}
 
-      {/* Promotional Section */}
-      <Box
-        sx={{
-          mt: 1,
-          height: 150,
-          display: "flex",
-          borderRadius: 2,
-          background: "#a26bfa",
-          position: "relative",
-          p: 2,
-        }}
-      >
+        <Divider />
+
+        {/* Notifications Section */}
+        <Stack sx={{ padding: "10px 15px 0", gap: "10px" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <MdNotifications color="#eab308" />
+            <Typography fontWeight={600}>Alerts</Typography>
+          </Box>
+
+          {alerts.map(({ type, color }) => (
+            <Box
+              key={type}
+              sx={{
+                height: 60,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Stack
+                flexDirection="row"
+                sx={{
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Stack flexDirection="row" gap={2}>
+                  <img
+                    src={doc13}
+                    alt="Alert Icon"
+                    width={48}
+                    height={48}
+                    style={{ borderRadius: "50%", background: "gray" }}
+                  />
+                  <Box>
+                    <Typography
+                      sx={{ fontWeight: 600, whiteSpace: "nowrap" }}
+                      color={color}
+                    >
+                      {type}
+                    </Typography>
+                    <Stack flexDirection="row" alignItems="center" gap={0.5}>
+                      <Typography
+                        sx={{ fontSize: 11, color: "#696868", fontWeight: 600 }}
+                      >
+                        Andrew Grey
+                      </Typography>
+                      <Box
+                        sx={{
+                          background: "#ccc",
+                          width: 2,
+                          height: 2,
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <Typography
+                        sx={{ fontSize: 11, color: "#9b9a9a", fontWeight: 600 }}
+                      >
+                        30 min ago
+                      </Typography>
+                    </Stack>
+                  </Box>
+                </Stack>
+              </Stack>
+            </Box>
+          ))}
+        </Stack>
+
+        {/* Promotional Section */}
         <Box
           sx={{
+            mt: 1,
+            height: 150,
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
+            borderRadius: 2,
+            background: "#a26bfa",
+            position: "relative",
+            p: 2,
           }}
         >
-          <Typography fontWeight="500" color="white" sx={{ fontSize: 18 }}>
-            Need
-          </Typography>
-          <Typography variant="h6" fontWeight="bold" color="white">
-            More?
-          </Typography>
-          <Button variant="contained" sx={{ background: "#fdad00" }}>
-            Upload
-          </Button>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography fontWeight="500" color="white" sx={{ fontSize: 18 }}>
+              Need
+            </Typography>
+            <Typography variant="h6" fontWeight="bold" color="white">
+              More?
+            </Typography>
+            <Button variant="contained" sx={{ background: "#fdad00" }}>
+              Upload
+            </Button>
+          </Box>
+          <img
+            src={doc9}
+            alt="Upgrade"
+            style={{
+              width: 150,
+              height: 190,
+              objectFit: "cover",
+              position: "absolute",
+              right: 0,
+              bottom: 0,
+              borderRadius: 14,
+            }}
+          />
         </Box>
-        <img
-          src={doc9}
-          alt="Upgrade"
-          style={{
-            width: 150,
-            height: 190,
-            objectFit: "cover",
-            position: "absolute",
-            right: 0,
-            bottom: 0,
-            borderRadius: 14,
-          }}
-        />
-      </Box>
-    </Box>
+      </Stack>
+      <Divider orientation="vertical" flexItem sx={{ ml: 1 }} />
+    </Stack>
   );
 };
 

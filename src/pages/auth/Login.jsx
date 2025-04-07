@@ -6,55 +6,44 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setEmail,
+  setPassword,
+  clearError,
+  loginUser,
+} from "../../redux/loginSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useEffect } from "react";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { email, password, error, user, loading } = useSelector(
+    (state) => state.login
+  );
 
-  const handleLogin = async () => {
-    setError(""); // Reset error message
-
-    try {
-      // Fetch both Patient & Doctor lists
-      const patientsRes = await axios.get(
-        "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient"
-      );
-      const doctorsRes = await axios.get(
-        "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor"
-      );
-
-      const patients = patientsRes.data;
-      const doctors = doctorsRes.data;
-
-      // Find user in patients list
-      let user =
-        patients.find((u) => u.email === email && u.password === password) ||
-        doctors.find((u) => u.email === email && u.password === password); 
-
-      if (user) {
-        console.log("Logged-in User:", user); // Debugging log
-
-        const userRole = localStorage.getItem("userRole");
-
-        // Redirect based on role
-        if (userRole === "admin") {
-          navigate("/admin/dashboard");
-        } else if (userRole === "doctor") {
-          navigate("/doctor/dashboard");
-        } else {
-          navigate("/patient/dashboard");
-        }
+  useEffect(() => {
+    if (user) {
+      const userRole = localStorage.getItem("userRole");
+      if (userRole === "admin") {
+        navigate("/admin/dashboard");
+      } else if (userRole === "doctor") {
+        navigate("/doctor/dashboard");
       } else {
-        setError("Invalid email or password.");
+        navigate("/patient/dashboard");
       }
-    } catch (err) {
-      console.error("Login Error:", err);
-      setError("Error logging in. Please try again.");
+    }
+  }, [user, navigate]);
+
+  const handleLogin = () => {
+    dispatch(clearError());
+    dispatch(loginUser({ email, password }));
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -86,10 +75,8 @@ function Login() {
           Enter your email and password to access your account.
         </Typography>
 
-        {/* Error Message */}
         {error && <Typography color="error.main">{error}</Typography>}
 
-        {/* Form Inputs */}
         <Box component="form" sx={{ mt: 2, textAlign: "left" }}>
           <Typography variant="body2" fontWeight="bold" sx={{ mb: 0.5 }}>
             Email
@@ -101,7 +88,8 @@ function Login() {
             size="small"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => dispatch(setEmail(e.target.value))}
+            onKeyDown={handleKeyDown}
             required
           />
 
@@ -115,11 +103,11 @@ function Login() {
             margin="dense"
             size="small"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => dispatch(setPassword(e.target.value))}
+            onKeyDown={handleKeyDown}  
             required
           />
 
-          {/* Login Button */}
           <Button
             fullWidth
             variant="contained"
@@ -131,12 +119,12 @@ function Login() {
               "&:hover": { bgcolor: "#4F6EF7" },
             }}
             onClick={handleLogin}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </Button>
         </Box>
 
-        {/* Signup Option */}
         <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
           Don't have an account?
           <Button
@@ -158,31 +146,118 @@ function Login() {
         </Typography>
       </Paper>
     </Container>
-  );
+  ); 
 }
 
 export default Login;
 
+//   };
 
+//   return (
+//     <Container
+//       maxWidth="sm"
+//       sx={{
+//         mt: 3,
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         minHeight: "85vh",
+//       }}
+//     >
+//       <Paper
+//         elevation={3}
+//         sx={{
+//           padding: 4,
+//           borderRadius: 3,
+//           width: "100%",
+//           textAlign: "center",
+//         }}
+//       >
+//         <Typography variant="h5" fontWeight="bold" color="#5e5e5e" gutterBottom>
+//           Login
+//         </Typography>
 
+//         <Typography variant="body1" color="textSecondary" gutterBottom>
+//           Enter your email and password to access your account.
+//         </Typography>
 
+//         {/* Error Message */}
+//         {error && <Typography color="error.main">{error}</Typography>}
 
+//         {/* Form Inputs */}
+//         <Box component="form" sx={{ mt: 2, textAlign: "left" }}>
+//           <Typography variant="body2" fontWeight="bold" sx={{ mb: 0.5 }}>
+//             Email
+//           </Typography>
+//           <TextField
+//             fullWidth
+//             variant="outlined"
+//             margin="dense"
+//             size="small"
+//             type="email"
+//             value={email}
+//             onChange={(e) => dispatch(setEmail(e.target.value))}
+//             required
+//           />
 
+//           <Typography variant="body2" fontWeight="bold" sx={{ mt: 2, mb: 0.5 }}>
+//             Password
+//           </Typography>
+//           <TextField
+//             fullWidth
+//             type="password"
+//             variant="outlined"
+//             margin="dense"
+//             size="small"
+//             value={password}
+//             onChange={(e) => dispatch(setPassword(e.target.value))}
+//             required
+//           />
 
+//           {/* Login Button */}
+//           <Button
+//             fullWidth
+//             variant="contained"
+//             sx={{
+//               mt: 3,
+//               bgcolor: "#4F6EF7",
+//               color: "white",
+//               fontWeight: "bold",
+//               "&:hover": { bgcolor: "#4F6EF7" },
+//             }}
+//             onClick={handleLogin}
+//             disabled={loading}
+//           >
+//             {loading ? "Logging in..." : "Login"}
+//           </Button>
+//         </Box>
 
+//         {/* Signup Option */}
+//         <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+//           Don't have an account?
+//           <Button
+//             sx={{
+//               padding: 0,
+//               minWidth: "auto",
+//               textTransform: "none",
+//               fontWeight: "bold",
+//               color: "#4F6EF7",
+//               "&:hover": {
+//                 backgroundColor: "transparent",
+//                 textDecoration: "underline",
+//               },
+//             }}
+//             onClick={() => navigate("/register")}
+//           >
+//             Signup
+//           </Button>
+//         </Typography>
+//       </Paper>
+//     </Container>
+//   );
+// }
 
-
-
-
-
-
-
-
-
-
-
-
-
+// export default Login;
 
 
 // import {
@@ -192,35 +267,56 @@ export default Login;
 //   TextField,
 //   Typography,
 //   Paper,
-//   CircularProgress,
 // } from "@mui/material";
 // import { useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { loginUser } from "../../redux/authSlice";
 // import { useNavigate } from "react-router-dom";
+// import axios from "axios";
 
 // function Login() {
 //   const [email, setEmail] = useState("");
 //   const [password, setPassword] = useState("");
-//   const dispatch = useDispatch();
+//   const [error, setError] = useState("");
 //   const navigate = useNavigate();
 
-//   const { loading, error } = useSelector((state) => state.auth);
-
 //   const handleLogin = async () => {
-//     const result = await dispatch(loginUser({ email, password }));
+//     setError(""); // Reset error message
 
-//     if (result.meta.requestStatus === "fulfilled") {
-//       const userRole = localStorage.getItem("userRole");
-// console.log("userRoleuserRole", userRole)
-//       // Redirect based on role
-//       if (userRole === "admin") {
-//         navigate("/admin/dashboard");
-//       } else if (userRole === "doctor") {
-//         navigate("/doctor/dashboard");
+//     try {
+//       // Fetch both Patient & Doctor lists
+//       const patientsRes = await axios.get(
+//         "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient"
+//       );
+//       const doctorsRes = await axios.get(
+//         "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor"
+//       );
+
+//       const patients = patientsRes.data;
+//       const doctors = doctorsRes.data;
+
+//       // Find user in patients list
+//       let user =
+//         patients.find((u) => u.email === email && u.password === password) ||
+//         doctors.find((u) => u.email === email && u.password === password);
+
+//       if (user) {
+//         console.log("Logged-in User:", user); // Debugging log
+
+//         const userRole = localStorage.getItem("userRole");
+
+//         // Redirect based on role
+//         if (userRole === "admin") {
+//           navigate("/admin/dashboard");
+//         } else if (userRole === "doctor") {
+//           navigate("/doctor/dashboard");
+//         } else {
+//           navigate("/patient/dashboard");
+//         }
 //       } else {
-//         navigate("/patient/dashboard");
+//         setError("Invalid email or password.");
 //       }
+//     } catch (err) {
+//       console.error("Login Error:", err);
+//       setError("Error logging in. Please try again.");
 //     }
 //   };
 
@@ -297,9 +393,8 @@ export default Login;
 //               "&:hover": { bgcolor: "#4F6EF7" },
 //             }}
 //             onClick={handleLogin}
-//             disabled={loading}
 //           >
-//             {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Login"}
+//             Login
 //           </Button>
 //         </Box>
 
@@ -329,4 +424,3 @@ export default Login;
 // }
 
 // export default Login;
-

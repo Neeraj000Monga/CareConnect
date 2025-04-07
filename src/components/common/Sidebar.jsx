@@ -11,14 +11,21 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { FaUserMd, FaCalendarDay, FaCalendarCheck, FaUsers } from "react-icons/fa";
+import {
+  FaUserMd,
+  FaCalendarDay,
+  FaCalendarCheck,
+  FaUsers,
+} from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import {  MdAssignmentTurnedIn, MdDashboard } from "react-icons/md";
+import { MdAssignmentTurnedIn, MdDashboard } from "react-icons/md";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { AppBar, Button, Container, Toolbar } from "@mui/material";
 // import logo from "../images/CareConnectLogoApp.png";
-import CareConnectLogo from '../../assets/CareConnectLogo.png'
+import CareConnectLogo from "../../assets/CareConnectLogo.png";
 import { RiFileList3Fill } from "react-icons/ri";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
 
 const drawerWidth = 200;
 
@@ -70,6 +77,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [open, setOpen] = useState(isLgUp);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userRole, setUserRole] = useState("patient");
 
   useEffect(() => {
@@ -103,11 +111,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         icon: <AccountCircleIcon size={20} />,
         path: "/patient/profile",
       },
-      {
-        name: "Settability",
-        icon: <AccountCircleIcon size={20} />,
-        path: "/patient/Settability",
-      },
     ],
     doctor: [
       {
@@ -120,34 +123,44 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         icon: <FaCalendarDay size={20} />,
         path: "/doctor/myAppointments",
       },
+      {
+        name: "Settability",
+        icon: <AccountCircleIcon size={20} />,
+        path: "/doctor/Settability",
+      },
     ],
-   admin: [
-    {
-      name: "Doctors Approval",
-      icon: <MdAssignmentTurnedIn  size={20} />,
-      path: "/admin/doctorsApproval",
-    },
-    {
-      name: "Appointments",
-      icon: <FaCalendarCheck size={20} />,
-      path: "/admin/appointments",
-    },
-    {
-      name: "Doctors List",
-      icon: <RiFileList3Fill size={20} />,
-      path: "/admin/doctorsLists",
-    },
-    {
-      name: "Patient List",
-      icon: <FaUsers size={20} />,
-      path: "/admin/patientLists",
-    },
-  ],
+    admin: [
+      {
+        name: "Doctors Approval",
+        icon: <MdAssignmentTurnedIn size={20} />,
+        path: "/admin/doctorsApproval",
+      },
+      {
+        name: "Appointments",
+        icon: <FaCalendarCheck size={20} />,
+        path: "/admin/appointments",
+      },
+      {
+        name: "Doctors List",
+        icon: <RiFileList3Fill size={20} />,
+        path: "/admin/doctorsLists",
+      },
+      {
+        name: "Patient List",
+        icon: <FaUsers size={20} />,
+        path: "/admin/patientLists",
+      },
+    ],
   };
 
   const handleDrawerToggle = () => {
     setOpen(!open);
     toggleSidebar(!open);
+  };
+
+  const handleLogout = () => {
+    navigate("/");
+    dispatch(logout());
   };
 
   return (
@@ -163,24 +176,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
             {/* Logo and Brand Name */}
-            <Box component="img" src={CareConnectLogo} alt="CareConnect Logo" sx={{  width: 200 ,marginLeft:'22px' }} />
-            {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={logo}
-                style={{ height: "60px", width: "auto" }}
-                alt="CareConnectLogo"
-              />
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  color: "#000b6d",
-                }}
-                mr={2}
-              >
-                CareConnect
-              </Typography>
-            </Box> */}
+            <Box
+              component="img"
+              src={CareConnectLogo}
+              alt="CareConnect Logo"
+              sx={{ width: 200, marginLeft: "22px" }}
+            />
 
             {/* Buttons (Login) */}
             <Box sx={{ display: "flex", gap: "12px" }}>
@@ -197,7 +198,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     backgroundColor: "#4058D3",
                   },
                 }}
-                onClick={() => navigate("/")}
+                onClick={handleLogout}
               >
                 Logout
               </Button>

@@ -8,33 +8,42 @@ import {
   Stack,
   TextField,
   MenuItem,
-  Alert,
 } from "@mui/material";
 import ProfilePic from "../../../assets/profile_pic.png";
 import EditIcon from "@mui/icons-material/Edit";
-import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Alerts } from "../../../style/Alert";
+import Loader from "../../../Loader";
 
 const PatientProfile = () => {
   const [error, setError] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [patientData, setPatientData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  console.log("patientData", patientData);
+  const storedUser = JSON.parse(localStorage.getItem("user2"));
+
+  console.log("storedUser:", storedUser);
+  console.log("patientData:", patientData);
 
   useEffect(() => {
     const fetchPatientData = async () => {
+      if (!storedUser) {
+        setError("No user found in local storage");
+        return;
+      }
+
       try {
         const response = await fetch(
-          "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient"
+          `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${storedUser}`
         );
+
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        setPatientData(data[0]);
+        console.log("Fetched patient data:", data); // Debugging
+        setPatientData(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -50,50 +59,28 @@ const PatientProfile = () => {
     setPatientData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Show a temporary preview before upload
-    const previewUrl = URL.createObjectURL(file);
-    setPatientData((prevData) => ({ ...prevData, profilePic: previewUrl }));
-
-    const imageData = new FormData();
-    imageData.append("file", file);
-    imageData.append("upload_preset", "careconnet"); // Your Cloudinary upload preset
-    imageData.append("cloud_name", "careconnet2"); // Your Cloudinary cloud name
-
-    try {
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/careconnet2/image/upload",
-        imageData
-      );
-
-      const imageUrl = response.data.secure_url;
-
-      // Update patientData with the new Cloudinary image URL
-      setPatientData((prevData) => ({ ...prevData, profilePic: imageUrl }));
-    } catch (error) {
-      console.error(
-        "Error uploading image:",
-        error.response?.data || error.message
-      );
-    }
-  };
-
   const handleSave = async () => {
+    if (!patientData) {
+      setError("No patient data to update.");
+      return;
+    }
+
     try {
       const response = await fetch(
-        `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${patientData.id}`,
+        `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${storedUser}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(patientData),
         }
       );
+
       if (!response.ok) {
         throw new Error("Failed to update data");
       }
+
+      const updatedData = await response.json();
+      setPatientData(updatedData); // Update state with saved data
       setIsEdit(false);
       setShowAlert(true);
     } catch (err) {
@@ -101,48 +88,11 @@ const PatientProfile = () => {
     }
   };
 
-  useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showAlert]);
-
-  function GradientCircularProgress() {
-    return (
-      <Box>
-        <svg width={0} height={0}>
-          <defs>
-            <linearGradient id="my_gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#e01cd5" />
-              <stop offset="100%" stopColor="#1CB5E0" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <CircularProgress
-          sx={{ "svg circle": { stroke: "url(#my_gradient)" } }}
-        />
-      </Box>
-    );
-  }
+  if (error) return <Typography color="error">Error: {error}</Typography>;
 
   if (loading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="80vh"
-        sx={{ position: "absolute", left: "50%" }}
-      >
-        <GradientCircularProgress />
-      </Box>
-    );
+    return <Loader />;
   }
-
-  if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
     <Box
@@ -165,7 +115,6 @@ const PatientProfile = () => {
               accept="image/*"
               style={{ display: "none" }}
               id="upload-photo"
-              onChange={handleFileChange}
             />
             <label htmlFor="upload-photo">
               <Box sx={{ position: "absolute" }}>
@@ -227,7 +176,7 @@ const PatientProfile = () => {
               />
             ) : (
               <Typography variant="h5" fontWeight={500} color="#262626">
-                Dr. {patientData?.name}
+                {patientData?.name}
               </Typography>
             )}
           </Box>
@@ -403,17 +352,11 @@ const PatientProfile = () => {
         </Box>
       )}
 
-      <Stack flexDirection="row" justifyContent="end">
-        {showAlert && (
-          <Alert
-            severity="info"
-            sx={{ border: "1px solid", mt: 1 }}
-            onClose={() => setShowAlert(false)}
-          >
-            Save
-          </Alert>
-        )}
-      </Stack>
+      {showAlert && (
+        <Alerts severity="info" onClose={() => setShowAlert(false)}>
+          Save
+        </Alerts>
+      )}
     </Box>
   );
 };

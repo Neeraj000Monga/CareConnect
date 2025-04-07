@@ -2,96 +2,31 @@ import { useState, useEffect } from "react";
 import {
   Box,
   Stack,
-  styled,
   Typography,
   Button,
   Paper,
   Alert,
+  IconButton,
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-
-const Wrapper = styled(Box)({
-  gap: "2px",
-  width: "100%",
-  display: "flex",
-  flexWrap: "wrap",
-});
-
-const DaysWrapper = styled(Box)({
-  gap: "2px",
-  display: "grid",
-  gridTemplateColumns: "repeat(7, 1fr)",
-});
-
-const HeaderCell = styled(Box)(({ theme }) => ({
-  width: "100%",
-  height: "40px",
-  display: "flex",
-  minWidth: "50px",
-  alignItems: "center",
-  background: "#cccccc45",
-  justifyContent: "center",
-  border: "1px solid #ccc",
-  "&:hover": {
-    backgroundColor: "#a7a7a745",
-  },
-}));
-
-const DayCell = styled(Box)(({ active, isToday, isPast, theme }) => ({
-  height: "40px",
-  minWidth: "50px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "1px solid #ccc",
-  cursor: isPast ? "not-allowed" : "pointer",
-  backgroundColor: active
-    ? " #1eb700"
-    : isToday
-    ? " #ffd700"
-    : isPast
-    ? " #ffcfcf"
-    : "transparent",
-  "&:hover": {
-    backgroundColor: isPast
-      ? " #ffcfcf"
-      : active
-      ? " #1a9f00"
-      : isToday
-      ? " #ffc107"
-      : " #cccccc2e",
-  },
-}));
-const TimeCell = styled(Button)(({ active, isPast, theme }) => ({
-  width: "100px",
-  height: "40px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "1px solid #ccc",
-  cursor: isPast ? "not-allowed" : "pointer",
-  [theme.breakpoints.down("md")]: {
-    width: "80px",
-  },
-  backgroundColor: active ? "#45d129" : "white",
-  "&:hover": {
-    backgroundColor: active ? " #31c913 " : "#cccccc2e",
-  },
-}));
-
-const DayText = styled(Typography)(({ active, isPast }) => ({
-  fontSize: "14px",
-  color: isPast ? "#aaa" : active ? "white" : "#6a6a6a",
-}));
-
-const WeekdayText = styled(Typography)({
-  fontSize: "14px",
-  letterSpacing: "2px",
-  fontWeight: 600,
-});
-
-const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setActiveDay,
+  toggleActiveSlot,
+  setMonth,
+  setYear,
+  toggleAlert,
+} from "../../../redux/bookApointmentSlice";
+import {
+  DaysWrapper,
+  Wrapper,
+  WeekdayText,
+  HeaderCell,
+  DayCell,
+  TimeCell,
+  DayText,
+} from "../../../style/Style";
 
 const timeSlots = [];
 let startHour = 10; // 10 AM
@@ -112,86 +47,107 @@ for (let hour = startHour; hour < endHour; hour++) {
 
 const Settability = () => {
   const today = new Date();
-  const [activeDay, setActiveDay] = useState(null);
-  const [activeSlot, setActiveSlot] = useState([]);
-  const [isDayLocked, setIsDayLocked] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentDate, setCurrentDate] = useState(today.getDate());
 
+  const dispatch = useDispatch();
+
+  const { activeDay, activeSlots, showAlert, currentMonth, currentYear } =
+    useSelector((state) => state.bookapointment);
+
+  console.log("activeSlots", activeSlots);
+  console.log("currentDate", currentDate);
   console.log("activeDay", activeDay);
-  console.log("activeSlot", activeSlot);
 
   useEffect(() => {
+    const daysInNewMonth = getDaysInMonth(currentMonth, currentYear);
+
+    if (activeDay > daysInNewMonth) {
+      dispatch(setActiveDay(null)); // Reset if out of range
+    }
+
     setCurrentDate(today.getDate());
-  }, []);
+  }, [currentMonth, currentYear, dispatch]);
 
   const getDaysInMonth = (month, year) =>
     new Date(year, month + 1, 0).getDate();
 
-  const handleReset = () => {
-    setActiveDay(null);
-    setActiveSlot([]);
-    setIsDayLocked(false);
-    setShowAlert(true);
-  };
-
-  const handleSlotClick = (slot) => {
-    setActiveSlot((prev) =>
-      prev.includes(slot)
-        ? prev.filter((time) => time !== slot)
-        : [...prev, slot]
-    );
+  const handleSlotClick = (slotTime) => {
+    dispatch(toggleActiveSlot(slotTime));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
-    if (currentMonth === 11) {
-      setCurrentYear((prev) => prev + 1);
+    let newMonth = currentMonth + 1;
+    let newYear = currentYear;
+
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear += 1;
     }
+
+    dispatch(setMonth(newMonth));
+    dispatch(setYear(newYear));
   };
 
   const handleBackMonth = () => {
-    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
-    if (currentMonth === 0) {
-      setCurrentYear((prev) => prev - 1);
+    let newMonth = currentMonth - 1;
+    let newYear = currentYear;
+
+    if (newMonth < 0) {
+      newMonth = 11;
+      newYear -= 1;
     }
+
+    dispatch(setMonth(newMonth));
+    dispatch(setYear(newYear));
   };
 
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
 
+  const handleAppointmentBook = () => {
+    dispatch(toggleAlert());
+  };
+
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const getFirstDayOfMonth = (month, year) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+
   return (
-    <Box sx={{ paddingTop: "60px" }}>
+    <Box sx={{ py: 8 }}>
       <Paper sx={{ p: 2 }}>
         <Typography
           sx={{
             mb: 2,
-            fontSize: "24px",
+            fontSize: "22px",
             textAlign: "center",
             borderBottom: "1px solid #ccc",
           }}
         >
           {activeDay
-            ? activeSlot
+            ? activeSlots
               ? `Selected: ${
                   currentMonth + 1
-                }-${activeDay}-${currentYear} ( ${activeSlot} )`
+                }-${activeDay}-${currentYear} ${activeSlots}`
               : "Select an available time"
             : `Today's Date: ${
                 currentMonth + 1
               } ${currentDate}, ${currentYear}`}
         </Typography>
         <Box>
-          <Stack>
-            <Stack sx={{ maxWidth: "700px", width: "100%", pt: 3 }}>
+          <Stack sx={{ alignItems: "center" }}>
+            <Stack sx={{ maxWidth: "700px", width: "100%" }}>
               <Stack
                 flexDirection="row"
-                justifyContent="space-between"
                 alignItems="center"
+                justifyContent="space-between"
               >
-                <ArrowBackIosIcon fontSize="12px" onClick={handleBackMonth} />
-                <Typography sx={{ fontSize: "24px", letterSpacing: "2px" }}>
+                <IconButton onClick={handleBackMonth}>
+                  <ArrowBackIosIcon sx={{ fontSize: "18px", ml: 0.3 }} />
+                </IconButton>
+                <Typography sx={{ fontSize: "20px", letterSpacing: "2px" }}>
                   {new Date(currentYear, currentMonth).toLocaleString(
                     "default",
                     {
@@ -200,19 +156,24 @@ const Settability = () => {
                   )}
                   {currentYear}
                 </Typography>
-                <ArrowForwardIosIcon
-                  fontSize="12px"
-                  onClick={handleNextMonth}
-                />
+                <IconButton onClick={handleNextMonth}>
+                  <ArrowForwardIosIcon sx={{ fontSize: "18px" }} />
+                </IconButton>
               </Stack>
-              <Stack flexDirection="row" sx={{ gap: "2px", mb: "2px" }}>
+              <DaysWrapper>
+                {/* Render weekday headers */}
                 {daysOfWeek.map((day, index) => (
                   <HeaderCell key={index}>
                     <WeekdayText>{day}</WeekdayText>
                   </HeaderCell>
                 ))}
-              </Stack>
-              <DaysWrapper>
+
+                {/* Add empty spaces before the first day */}
+                {Array.from({ length: firstDay }).map((_, index) => (
+                  <Box key={`empty-${index}`} />
+                ))}
+
+                {/* Render days in the correct grid position */}
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(
                   (day) => (
                     <DayCell
@@ -225,23 +186,12 @@ const Settability = () => {
                       }
                       isPast={new Date(currentYear, currentMonth, day) < today}
                       onClick={() => {
-                        if (
-                          !isDayLocked &&
-                          new Date(currentYear, currentMonth, day) >= today
-                        ) {
-                          setActiveDay(day);
-                          setIsDayLocked(true);
+                        if (new Date(currentYear, currentMonth, day) >= today) {
+                          dispatch(setActiveDay(day));
                         }
                       }}
                     >
-                      <DayText
-                        active={activeDay === day}
-                        isPast={
-                          new Date(currentYear, currentMonth, day) < today
-                        }
-                      >
-                        {day}
-                      </DayText>
+                      <DayText active={activeDay === day}>{day}</DayText>
                     </DayCell>
                   )
                 )}
@@ -251,19 +201,25 @@ const Settability = () => {
 
           <Stack>
             <Typography
-              sx={{ mt: 1, fontSize: "18px", fontWeight: "bold", my: 3 }}
+              sx={{
+                fontSize: "18px",
+                fontWeight: "bold",
+                my: 2,
+                textAlign: "center",
+              }}
             >
               Select Time Slot:
             </Typography>
-            <Wrapper>
-              {timeSlots.map((slot) => (
+
+            <Wrapper sx={{ py: 3 }}>
+              {timeSlots?.map((slot) => (
                 <TimeCell
-                  key={slot.time}
-                  active={activeSlot.includes(slot.time)}
+                  key={slot?.time}
+                  active={activeSlots?.includes(slot?.time)}
                   onClick={() => handleSlotClick(slot.time)}
                 >
-                  <DayText active={activeSlot.includes(slot.time)}>
-                    {slot.time}
+                  <DayText active={activeSlots?.includes(slot?.time)}>
+                    {slot?.time}
                   </DayText>
                 </TimeCell>
               ))}
@@ -271,45 +227,38 @@ const Settability = () => {
           </Stack>
         </Box>
 
-        <Box>
-          {activeDay && activeSlot && (
-            <Stack flexDirection="row" gap={2} mt={2}>
-              <Typography sx={{ fontSize: "22px", letterSpacing: "2px" }}>
-                {`${currentMonth + 1}-${activeDay}-${currentYear}`}
-              </Typography>
-              <Typography sx={{ fontSize: "22px", color: "#000" }}>
-                {`${activeSlot}`}
-              </Typography>
-            </Stack>
-          )}
-          {activeDay && activeSlot && (
+        {activeDay && activeSlots.length >= 1 && (
+          <Stack alignItems="center">
             <Button
+              onClick={handleAppointmentBook}
               variant="contained"
-              color="secondary"
-              onClick={handleReset}
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                color: "white",
+                width: "240px",
+                background: "#000",
+                fontWeight: "bold",
+                "&:hover": { background: "#000000d6" },
+              }}
             >
-              Unselect Date & Time
+              Book an appointment
             </Button>
-          )}
-        </Box>
-
-        <Stack flexDirection="row" justifyContent="end">
-          {activeDay && activeSlot.length >= 1 && (
-            <Alert severity="info" sx={{ border: "1px solid", mt: 1 }}>
-              Date & Time Selected
-            </Alert>
-          )}
-          {showAlert && (
-            <Alert
-              severity="warning"
-              sx={{ border: "1px solid", mt: 1 }}
-              onClose={() => setShowAlert(false)}
-            >
-              Date & Time Unselected!
-            </Alert>
-          )}
-        </Stack>
+          </Stack>
+        )}
+        {showAlert && (
+          <Alert
+            severity="info"
+            sx={{
+              mt: 1,
+              top: 0,
+              left: "46%",
+              zIndex: 9999,
+              position: "fixed",
+            }}
+          >
+            your appointment booked successfully
+          </Alert>
+        )}
       </Paper>
     </Box>
   );

@@ -1,11 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../redux/authSlice";
-import signupReducer from "../redux/signupSlice"; // FIXED IMPORT
+import signupReducer from "../redux/signupSlice";
+import appointmentReducer from "../redux/appointmentSlice";
+import bookApointmentReducer from "../redux/bookApointmentSlice";
+import loginReducer from "../redux/loginSlice";
+
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    signup: signupReducer, // Ensure it's 'signup' and not something else
+    signup: signupReducer,
+    login: loginReducer,
+    appointment: appointmentReducer,
+    bookapointment: bookApointmentReducer,
   },
 });
 

@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
- 
-// Async thunk for login
+
+// Async thunk to handle login request
 export const loginUser = createAsyncThunk(
-  "auth/loginUser",
+  "login/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      // Fetch patients and doctors data
+      // Fetch both Patient & Doctor lists
       const patientsRes = await axios.get(
         "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient"
       );
@@ -17,52 +17,53 @@ export const loginUser = createAsyncThunk(
       const patients = patientsRes.data;
       const doctors = doctorsRes.data;
 
-      console.log("Doctors List:", doctors); // Debugging
-
-      // Find user in either list
-      let user =
+      // Find user in patients list
+      const user =
         patients.find((u) => u.email === email && u.password === password) ||
         doctors.find((u) => u.email === email && u.password === password);
 
       if (user) {
-        // Save role in localStorage
-        localStorage.setItem("userRole", user.role);
-        localStorage.setItem("user", JSON.stringify(user));
-        return user; // Return user data for Redux store
+        localStorage.setItem("user2", JSON.stringify(user?.id));
+        return user;
       } else {
         return rejectWithValue("Invalid email or password.");
       }
-    } catch (error) {
+    } catch (err) {
       return rejectWithValue("Error logging in. Please try again.");
     }
   }
 );
 
-const authSlice = createSlice({
-  name: "auth",
+// Slice to handle login-related state
+const loginSlice = createSlice({
+  name: "login",
   initialState: {
+    email: "",
+    password: "",
+    error: "",
     user: null,
-    error: null,
     loading: false,
   },
   reducers: {
-    logout: (state) => {
-      localStorage.removeItem("user");
-      localStorage.removeItem("userRole");
-      localStorage.removeItem("user2");
-      state.user = null;
-      state.error = null;
+    setEmail: (state, action) => {
+      state.email = action.payload;
+    },
+    setPassword: (state, action) => {
+      state.password = action.payload;
+    },
+    clearError: (state) => {
+      state.error = "";
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        state.error = "";
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -71,5 +72,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
-export default authSlice.reducer;
+// Export actions
+export const { setEmail, setPassword, clearError } = loginSlice.actions;
+
+// Export reducer to be used in the store
+export default loginSlice.reducer;

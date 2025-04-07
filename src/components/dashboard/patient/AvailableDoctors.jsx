@@ -9,7 +9,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchDoctors,
+  setSelectedDoctorId,
+} from "../../../redux/appointmentSlice";
+import Loader from "../../../Loader";
 
 const Specialties = [
   "All Doctors",
@@ -22,31 +27,27 @@ const Specialties = [
 
 const AvailableDoctors = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState("All Doctors");
-  const [doctors, setDoctors] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Get doctors & selectedDoctorId from Redux store
+  const { doctors, loading, selectedDoctorId, error } = useSelector(
+    (state) => state.appointment
+  );
+
+  useEffect(() => {
+    dispatch(fetchDoctors());
+  }, [dispatch]);
+
+  const handleClick = (id) => {
+    console.log("Doctor ID:", id);
+    dispatch(setSelectedDoctorId(id));
+    navigate("/patient/bookAppointments");
+  };
 
   console.log("doctors", doctors);
   console.log("selectedSpecialty", selectedSpecialty);
-
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await fetch(
-          "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor"
-        );
-        const data = await response.json();
-        setDoctors(data);
-      } catch (error) {
-        console.error("Error fetching doctors:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDoctors();
-  }, []);
-
-  const navigate = useNavigate();
 
   // Filter doctors based on selected specialty
   const filteredDoctors =
@@ -55,17 +56,7 @@ const AvailableDoctors = () => {
       : doctors.filter((doctor) => doctor.specialization === selectedSpecialty);
 
   if (loading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="80vh"
-        sx={{ position: "absolute", left: "50%" }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <Loader />;
   }
 
   return (
@@ -123,19 +114,22 @@ const AvailableDoctors = () => {
           }}
         >
           {filteredDoctors.length > 0 ? (
-            filteredDoctors.map((item, index) => (
+            filteredDoctors.map((item) => (
               <Card
                 sx={{
+                  border:
+                    selectedDoctorId === item.id
+                      ? "2px solid rgb(144, 175, 255)"
+                      : "1px solid #c9d8ff",
                   width: "250px",
-                  border: "1px solid #c9d8ff",
                   borderRadius: 2,
                   overflow: "hidden",
                   cursor: "pointer",
                   transition: "transform 0.5s",
                   "&:hover": { transform: "translateY(-10px)" },
                 }}
-                key={index}
-                onClick={() => navigate("/patient/bookAppointments")}
+                key={item.id}
+                onClick={() => handleClick(item.id)}
               >
                 <CardMedia
                   component="img"

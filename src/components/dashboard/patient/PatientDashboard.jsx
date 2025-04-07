@@ -1,17 +1,20 @@
-import { Box, Typography, Divider, Grid } from "@mui/material";
-import PatientHealth from "../../../assets/healthy_image-removebg-preview.png";
-import RigthSideProfile from "../../common/RigthSideProfile";
-import LatestAppointment from "../../common/LatestAppointment";
 import SpecialityMenu from "./SpecialityMenu";
+import RigthSideProfile from "../../common/RigthSideProfile";
+import { Box, Typography, Divider, Grid } from "@mui/material";
+import LatestAppointment from "../../common/LatestAppointment";
+import PatientHealth from "../../../assets/healthy_image-removebg-preview.png";
 
 const PatientDashboard = () => {
+
+  
+
   return (
-    <Box sx={{ mt: 10 }}>
-      <Grid container spacing={2}>
+    <Box sx={{ mt: 5 }}>
+      <Grid container>
         <Grid item xs={8}>
           <Box
             sx={{
-              mb: "20px",
+              my: "20px",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -24,18 +27,15 @@ const PatientDashboard = () => {
               Friday, 28 Feb, 2025
             </Typography>
           </Box>
-
           <Divider />
-
           {/* Welcome Section */}
           <Box
             sx={{
               p: 3,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-
               borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <Box>

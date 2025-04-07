@@ -32,7 +32,7 @@ const DashboardLayout = ({ role }) => {
           padding: "20px",
         }}
       >
-      <Routes>
+        <Routes>
           {role === "patient" ? (
             <>
               <Route path="dashboard" element={<PatientDashboard />} />
@@ -40,12 +40,12 @@ const DashboardLayout = ({ role }) => {
               <Route path="myAppointments" element={<PatientAppointments />} />
               <Route path="bookAppointments" element={<BookAppointment />} />
               <Route path="profile" element={<PatientProfile />} />
-              <Route path="Settability" element={<Settability />} />
             </>
           ) : role === "doctor" ? (
             <>
               <Route path="dashboard" element={<DoctorDashboard />} />
               <Route path="myAppointments" element={<DoctorAppointments />} />
+              <Route path="Settability" element={<Settability />} />
             </>
           ) : role === "admin" ? (
             <>
