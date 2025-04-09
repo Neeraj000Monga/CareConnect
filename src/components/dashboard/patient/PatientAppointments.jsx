@@ -39,6 +39,70 @@ const PatientAppointments = () => {
     fetchPatient();
   }, [userId]);
 
+  // Handle cancel appointment
+  // const handleCancelAppointment = async (doctorId) => {
+  //   if (!doctorId) return;
+
+  //   const updatedPatients = patient.map((p) => {
+  //     // Filter out the appointment that needs to be canceled
+  //     const updatedAppointments = p.myappointments.filter(
+  //       (appointment) => appointment.id !== doctorId
+  //     );
+
+  //     return { ...p, myappointments: updatedAppointments };
+  //   });
+
+  //   setPatients(updatedPatients);
+
+  //   try {
+  //     // Make API call to delete the appointment (replace with your API endpoint)
+  //     const response = await fetch(
+  //       `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${doctorId}`,
+  //       {
+  //         method: "DELETE",
+  //       }
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Failed to cancel appointment");
+  //     }
+
+  //     // After successful deletion, we do nothing as we've already updated the state.
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  //   console.log("doctorId", doctorId);
+  // };
+
+  const handleCancelAppointment = async (doctorId) => {
+    if (!doctorId) return;
+
+    console.log("doctorId:", doctorId); // Log here
+
+    const updatedPatients = patient.map((p) => {
+      const updatedAppointments = p.myappointments.filter(
+        (appointment) => appointment.doctorId !== doctorId
+      );
+      return { ...p, myappointments: updatedAppointments };
+    });
+
+    setPatients(updatedPatients);
+
+    try {
+      const response = await fetch(
+        `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${doctorId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to cancel appointment");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (loading) return <Loader />;
 
   return (
@@ -154,6 +218,9 @@ const PatientAppointments = () => {
                             borderColor: "#DC3545",
                           },
                         }}
+                        onClick={() =>
+                          handleCancelAppointment(appointment.doctorId)
+                        }
                       >
                         Cancel
                       </Button>
