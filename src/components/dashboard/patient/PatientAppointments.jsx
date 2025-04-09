@@ -1,11 +1,31 @@
 import { useEffect, useState } from "react";
-import { Box, Typography, Grid, Button, Stack, Card } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  Button,
+  Stack,
+  Card,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import Loader from "../../../Loader";
 
 const PatientAppointments = () => {
   const [patient, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // 'success' | 'error'
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const storedUser = JSON.parse(localStorage.getItem("user2"));
   const userId = storedUser;
@@ -39,25 +59,24 @@ const PatientAppointments = () => {
     fetchPatient();
   }, [userId]);
 
-  
-
   // Handle cancel appointment
 
-  const handleCancelAppointment = async (doctorId) => {
-    if (!doctorId || !patient.length) return;
-  
-    const currentPatient = patient[0]; 
+  const handleCancelAppointment = async () => {
+    if (!selectedDoctorId || !patient.length) return;
+
+    const currentPatient = patient[0];
     const updatedAppointments = currentPatient.myappointments.filter(
-      (appointment) => appointment?.doctorId !== doctorId
+      (appointment) => appointment?.doctorId !== selectedDoctorId
     );
-  
+
     const updatedPatientData = {
       ...currentPatient,
       myappointments: updatedAppointments,
     };
-  
+
     setPatients([{ ...updatedPatientData }]);
-  
+    setOpenDialog(false);
+
     try {
       const response = await fetch(
         `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${userId}`,
@@ -69,15 +88,26 @@ const PatientAppointments = () => {
           body: JSON.stringify(updatedPatientData),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to cancel appointment");
       }
+
+      setSnackbarMessage("Appointment successfully cancelled.");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
     } catch (err) {
       setError(err.message);
+      setSnackbarMessage("Error cancelling appointment: " + err.message);
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
     }
   };
-  
+
+  const confirmCancelAppointment = (doctorId) => {
+    setSelectedDoctorId(doctorId);
+    setOpenDialog(true);
+  };
 
   if (loading) return <Loader />;
 
@@ -195,10 +225,10 @@ const PatientAppointments = () => {
                           },
                         }}
                         onClick={() =>
-                          handleCancelAppointment(appointment?.doctorId)
+                          confirmCancelAppointment(appointment?.doctorId)
                         }
                       >
-                        Cancel
+                        Cancel Appointment
                       </Button>
                     </Stack>
                   </Grid>
@@ -207,6 +237,40 @@ const PatientAppointments = () => {
             ))}
           </Stack>
         ))}
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Cancel Appointment</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to cancel this appointment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={() => setOpenDialog(false)}>No</Button>
+          <Button
+            onClick={handleCancelAppointment}
+            color="error"
+            variant="contained"
+          >
+            Yes, Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          severity={snackbarSeverity}
+          variant="filled"
+          onClose={() => setOpenSnackbar(false)}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
