@@ -173,10 +173,11 @@ const BookAppointment = () => {
         myappointments: [
           ...(patient.myappointments || []),
           {
-            doctorName: doctor.name,
-            specialization: doctor.specialization,
-            degree: doctor.degree,
-            profilePic: doctor.profilePic,
+            doctorId: doctor.id,
+            doctorName: doctor?.name,
+            specialization: doctor?.specialization,
+            degree: doctor?.degree,
+            profilePic: doctor?.profilePic,
             date: `${currentYear}-${currentMonth + 1}-${activeDay}`,
             timeSlots: activeSlots,
           },
