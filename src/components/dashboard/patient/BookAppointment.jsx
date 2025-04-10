@@ -13,6 +13,7 @@ import {
   Stack,
   IconButton,
   Alert,
+  Card,
 } from "@mui/material";
 import {
   setActiveDay,
@@ -224,7 +225,7 @@ const BookAppointment = () => {
   }, [dispatch]);
 
   return (
-    <Box mt={10}>
+    <Box mt={8}>
       {doctors
         ?.filter((item) => item?.id === selectedDoctorId)
         ?.map((item) => (
@@ -236,28 +237,31 @@ const BookAppointment = () => {
               sx={{
                 width: "100%",
                 maxWidth: 288,
-                border: "1px solid #c9d8ff",
-                borderRadius: "8px",
+                height: "250px",
                 bgcolor: "#eaefff",
-                height: "100%",
+                borderRadius: "8px",
+                border: "1px solid #c9d8ff",
               }}
             />
             <DoctorCard>
               <Box display="flex" alignItems="center" gap={1}>
-                <Typography variant="h4" fontWeight={600} color="text.primary">
-                  {item.name}
+                <Typography
+                  sx={{ fontSize: "28px" }}
+                  fontWeight={600}
+                  color="text.primary"
+                >
+                  {item?.name}
                 </Typography>
                 <img src={verifiedIcon} alt="Verified" width={20} />
               </Box>
               <Box
-                mt={1}
                 gap={1}
                 display="flex"
                 alignItems="center"
                 color="text.secondary"
               >
                 <Typography>
-                  {item.degree} - {item.specialization}
+                  {item?.degree} - {item.specialization}
                 </Typography>
                 <Button
                   variant="outlined"
@@ -286,7 +290,6 @@ const BookAppointment = () => {
                   variant="body2"
                   color="text.secondary"
                   maxWidth={700}
-                  mt={1}
                 >
                   Dr. Davis has a strong commitment to delivering comprehensive
                   medical care, focusing on preventive medicine, early
@@ -300,7 +303,7 @@ const BookAppointment = () => {
                 variant="body1"
                 fontWeight={500}
                 color="text.secondary"
-                mt={4}
+                mt={1}
               >
                 Appointment Fee:
                 <Typography component="span" color="text.primary">
@@ -311,153 +314,161 @@ const BookAppointment = () => {
           </StyledBox>
         ))}
 
-      <Paper sx={{ p: 2, mt: 3 }}>
-        <Typography
-          sx={{
-            mb: 2,
-            fontSize: "22px",
-            textAlign: "center",
-            borderBottom: "1px solid #ccc",
-          }}
-        >
-          {activeDay
-            ? activeSlots
-              ? `Selected: ${
-                  currentMonth + 1
-                }-${activeDay}-${currentYear} ${activeSlots}`
-              : "Select an available time"
-            : `Today's Date: ${
-                currentMonth + 1
-              } ${currentDate}, ${currentYear}`}
-        </Typography>
-        <Box>
-          <Stack sx={{ alignItems: "center" }}>
-            <Stack sx={{ maxWidth: "700px", width: "100%" }}>
-              <Stack
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <IconButton onClick={handleBackMonth}>
-                  <ArrowBackIosIcon sx={{ fontSize: "18px", ml: 0.3 }} />
-                </IconButton>
-                <Typography sx={{ fontSize: "20px", letterSpacing: "2px" }}>
-                  {new Date(currentYear, currentMonth).toLocaleString(
-                    "default",
-                    {
-                      month: "long",
-                    }
-                  )}
-                  {currentYear}
-                </Typography>
-                <IconButton onClick={handleNextMonth}>
-                  <ArrowForwardIosIcon sx={{ fontSize: "18px" }} />
-                </IconButton>
-              </Stack>
-              <DaysWrapper>
-                {daysOfWeek.map((day, index) => (
-                  <HeaderCell key={index}>
-                    <WeekdayText>{day}</WeekdayText>
-                  </HeaderCell>
-                ))}
-
-                {Array.from({ length: firstDay }).map((_, index) => (
-                  <Box key={`empty-${index}`} />
-                ))}
-
-                {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(
-                  (day) => (
-                    <DayCell
-                      key={day}
-                      active={activeDay === day}
-                      isToday={
-                        day === currentDate &&
-                        currentMonth === today.getMonth() &&
-                        currentYear === today.getFullYear()
-                      }
-                      isPast={new Date(currentYear, currentMonth, day) < today}
-                      onClick={() => {
-                        if (new Date(currentYear, currentMonth, day) >= today) {
-                          dispatch(setActiveDay(day));
-                        }
-                      }}
-                    >
-                      <DayText active={activeDay === day}>{day}</DayText>
-                    </DayCell>
-                  )
-                )}
-              </DaysWrapper>
-            </Stack>
-          </Stack>
-
-          <Stack>
-            <Typography
-              sx={{
-                fontSize: "18px",
-                fontWeight: "bold",
-                my: 2,
-                textAlign: "center",
-              }}
-            >
-              Select Time Slot:
-            </Typography>
-
-            <Wrapper sx={{ py: 3 }}>
-              {timeSlots?.map((slot) => (
-                <TimeCell
-                  key={slot?.time}
-                  active={activeSlots?.includes(slot?.time)}
-                  onClick={() => handleSlotClick(slot.time)}
-                >
-                  <DayText active={activeSlots?.includes(slot?.time)}>
-                    {slot?.time}
-                  </DayText>
-                </TimeCell>
-              ))}
-            </Wrapper>
-          </Stack>
-        </Box>
-
-        {activeDay && activeSlots.length >= 1 && (
-          <Stack alignItems="center">
-            <Button
-              onClick={handleAppointmentBook}
-              variant="contained"
-              disabled={loading || confirmed}
-              sx={{
-                mt: 2,
-                color: "white",
-                width: "240px",
-                background: confirmed ? "gray" : "#000",
-                fontWeight: "bold",
-                "&:hover": { background: confirmed ? "gray" : "#000000d6" },
-              }}
-            >
-              {loading
-                ? "Booking..."
-                : confirmed
-                ? "Appointment Confirmed"
-                : "Book an Appointment"}
-            </Button>
-          </Stack>
-        )}
-        {showAlert && (
-          <Alert
-            severity="info"
+      {selectedDoctorId?.length > 0 && (
+        <Paper sx={{ p: 2, mt: 3 }}>
+          <Typography
             sx={{
-              mt: 1,
-              top: 0,
-              left: "46%",
-              zIndex: 9999,
-              position: "fixed",
+              mb: 2,
+              fontSize: "22px",
+              textAlign: "center",
+              borderBottom: "1px solid #ccc",
             }}
           >
-            your appointment booked successfully
-          </Alert>
-        )}
-      </Paper>
+            {activeDay
+              ? activeSlots
+                ? `Selected: ${
+                    currentMonth + 1
+                  }-${activeDay}-${currentYear} ${activeSlots}`
+                : "Select an available time"
+              : `Today's Date: ${
+                  currentMonth + 1
+                } ${currentDate}, ${currentYear}`}
+          </Typography>
+          <Box>
+            <Stack sx={{ alignItems: "center" }}>
+              <Stack sx={{ maxWidth: "700px", width: "100%" }}>
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <IconButton onClick={handleBackMonth}>
+                    <ArrowBackIosIcon sx={{ fontSize: "18px", ml: 0.3 }} />
+                  </IconButton>
+                  <Typography sx={{ fontSize: "20px", letterSpacing: "2px" }}>
+                    {new Date(currentYear, currentMonth).toLocaleString(
+                      "default",
+                      {
+                        month: "long",
+                      }
+                    )}
+                    {currentYear}
+                  </Typography>
+                  <IconButton onClick={handleNextMonth}>
+                    <ArrowForwardIosIcon sx={{ fontSize: "18px" }} />
+                  </IconButton>
+                </Stack>
+                <DaysWrapper>
+                  {daysOfWeek.map((day, index) => (
+                    <HeaderCell key={index}>
+                      <WeekdayText>{day}</WeekdayText>
+                    </HeaderCell>
+                  ))}
 
-      <RelatedDoctors />
+                  {Array.from({ length: firstDay }).map((_, index) => (
+                    <Box key={`empty-${index}`} />
+                  ))}
+
+                  {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(
+                    (day) => (
+                      <DayCell
+                        key={day}
+                        active={activeDay === day}
+                        isToday={
+                          day === currentDate &&
+                          currentMonth === today.getMonth() &&
+                          currentYear === today.getFullYear()
+                        }
+                        isPast={
+                          new Date(currentYear, currentMonth, day) < today
+                        }
+                        onClick={() => {
+                          if (
+                            new Date(currentYear, currentMonth, day) >= today
+                          ) {
+                            dispatch(setActiveDay(day));
+                          }
+                        }}
+                      >
+                        <DayText active={activeDay === day}>{day}</DayText>
+                      </DayCell>
+                    )
+                  )}
+                </DaysWrapper>
+              </Stack>
+            </Stack>
+
+            <Stack>
+              <Typography
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  my: 2,
+                  textAlign: "center",
+                }}
+              >
+                Select Time Slot:
+              </Typography>
+
+              <Wrapper sx={{ py: 3 }}>
+                {timeSlots?.map((slot) => (
+                  <TimeCell
+                    key={slot?.time}
+                    active={activeSlots?.includes(slot?.time)}
+                    onClick={() => handleSlotClick(slot.time)}
+                  >
+                    <DayText active={activeSlots?.includes(slot?.time)}>
+                      {slot?.time}
+                    </DayText>
+                  </TimeCell>
+                ))}
+              </Wrapper>
+            </Stack>
+          </Box>
+
+          {activeDay && activeSlots.length >= 1 && (
+            <Stack alignItems="center">
+              <Button
+                onClick={handleAppointmentBook}
+                variant="contained"
+                disabled={loading || confirmed}
+                sx={{
+                  mt: 2,
+                  color: "white",
+                  width: "240px",
+                  background: confirmed ? "gray" : "#000",
+                  fontWeight: "bold",
+                  "&:hover": { background: confirmed ? "gray" : "#000000d6" },
+                }}
+              >
+                {loading
+                  ? "Booking..."
+                  : confirmed
+                  ? "Appointment Confirmed"
+                  : "Book an Appointment"}
+              </Button>
+            </Stack>
+          )}
+          {showAlert && (
+            <Alert
+              severity="info"
+              sx={{
+                mt: 1,
+                top: 0,
+                left: "46%",
+                zIndex: 9999,
+                position: "fixed",
+              }}
+            >
+              your appointment booked successfully
+            </Alert>
+          )}
+        </Paper>
+      )}
+
+      <Card sx={{ p: 2, mt: 3 }}>
+        <RelatedDoctors />
+      </Card>
     </Box>
   );
 };

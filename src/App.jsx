@@ -28,7 +28,7 @@ function App() {
       <Provider store={store}>
         <CssBaseline />
         {!isDashboard && <Navbar />}
-        <Box>
+        <Box sx={{ minHeight: "47.5vh" }}>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<HomePage />} />

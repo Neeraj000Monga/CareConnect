@@ -1,10 +1,14 @@
 import { Box, Typography, Card, CardMedia, CardContent } from "@mui/material";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const RelatedDoctors = () => {
   const { doctors, selectedDoctorId } = useSelector(
     (state) => state.appointment
   );
+
+  const navigate = useNavigate();
 
   const selectedDoctor = doctors.find((doc) => doc.id === selectedDoctorId);
 
@@ -15,6 +19,12 @@ const RelatedDoctors = () => {
       doc.specialization === selectedSpecialty && doc.id !== selectedDoctorId
   );
 
+  useEffect(() => {
+    if (selectedDoctor === undefined) {
+      navigate("/patient/availableDoctors");
+    }
+  }, [selectedDoctor, navigate]);
+
   return (
     <Box>
       <Box
@@ -22,16 +32,18 @@ const RelatedDoctors = () => {
         flexDirection="column"
         alignItems="center"
         gap={2}
-        mt={4}
         color="grey.900"
         mx={{ md: 10 }}
       >
-        <Typography variant="h4" fontWeight={500}>
-          Related Doctors
-        </Typography>
-        <Typography variant="body1" textAlign="center" width={{ sm: "50%" }}>
-          Simply browse through our extensive list of trusted doctors.
-        </Typography>
+        {relatedDoctors.length > 0 ? (
+          <Typography variant="h4" fontWeight={500}>
+            Related Doctors
+          </Typography>
+        ) : (
+          <Typography variant="body1" color="text.secondary" mt={2}>
+            No related doctors found.
+          </Typography>
+        )}
       </Box>
 
       <Box
@@ -43,7 +55,7 @@ const RelatedDoctors = () => {
           marginTop: "15px",
         }}
       >
-        {relatedDoctors.length > 0 ? (
+        {relatedDoctors?.length > 0 &&
           relatedDoctors.map((item) => (
             <Card
               sx={{
@@ -91,12 +103,7 @@ const RelatedDoctors = () => {
                 </Typography>
               </CardContent>
             </Card>
-          ))
-        ) : (
-          <Typography variant="body1" color="text.secondary" mt={2}>
-            No related doctors found.
-          </Typography>
-        )}
+          ))}
       </Box>
     </Box>
   );

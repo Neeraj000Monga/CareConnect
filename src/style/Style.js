@@ -84,7 +84,6 @@ export const TimeCell = styled(Button)(({ active, isPast, theme }) => ({
   },
 }));
 
-
 export const StyledBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -98,7 +97,7 @@ export const DoctorCard = styled(Paper)(({ theme }) => ({
   flex: 1,
   border: "1px solid #BDBDBD",
   borderRadius: "8px",
-  padding: theme.spacing(4),
+  padding: "20px 30px",
   backgroundColor: "#fff",
   [theme.breakpoints.up("sm")]: {
     marginTop: 0,
