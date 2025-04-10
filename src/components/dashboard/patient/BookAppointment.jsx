@@ -134,12 +134,24 @@ const BookAppointment = () => {
       const doctor = doctors.find((doc) => doc.id === selectedDoctorId);
       if (!doctor) throw new Error("Doctor not found");
 
-      // Update doctor appointments
+      // Fetch the patient data BEFORE using it
+      const patientResponse = await fetch(
+        `${patientApiUrl}/${selectedPatientId}`
+      );
+      if (!patientResponse.ok) throw new Error("Failed to fetch patient");
+
+      const patient = await patientResponse.json();
+
+      //  `Add patient data to the doctor API`
       const updatedDoctor = {
         ...doctor,
         appointments: [
           ...(doctor.appointments || []),
           {
+            patientId: patient?.id,
+            patientName: patient?.name,
+            patienAllergies: patient?.allergies,
+            patienProfilePic: patient?.profilePic,
             date: `${currentYear}-${currentMonth + 1}-${activeDay}`,
             timeSlots: activeSlots,
           },
@@ -158,16 +170,7 @@ const BookAppointment = () => {
       if (!doctorUpdateResponse.ok)
         throw new Error("Failed to book appointment for doctor");
 
-      // Fetch the patient data
-      const patientResponse = await fetch(
-        `${patientApiUrl}/${selectedPatientId}`
-      );
-      if (!patientResponse.ok) throw new Error("Failed to fetch patient");
-
-      const patient = await patientResponse.json();
-
-      // Update patient appointments
-
+      //  `Add doctor data to the patient API`
       const updatedPatient = {
         ...patient,
         myappointments: [
@@ -247,10 +250,10 @@ const BookAppointment = () => {
                 <img src={verifiedIcon} alt="Verified" width={20} />
               </Box>
               <Box
+                mt={1}
+                gap={1}
                 display="flex"
                 alignItems="center"
-                gap={1}
-                mt={1}
                 color="text.secondary"
               >
                 <Typography>
@@ -352,19 +355,16 @@ const BookAppointment = () => {
                 </IconButton>
               </Stack>
               <DaysWrapper>
-                {/* Render weekday headers */}
                 {daysOfWeek.map((day, index) => (
                   <HeaderCell key={index}>
                     <WeekdayText>{day}</WeekdayText>
                   </HeaderCell>
                 ))}
 
-                {/* Add empty spaces before the first day */}
                 {Array.from({ length: firstDay }).map((_, index) => (
                   <Box key={`empty-${index}`} />
                 ))}
 
-                {/* Render days in the correct grid position */}
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(
                   (day) => (
                     <DayCell

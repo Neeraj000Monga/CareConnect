@@ -31,8 +31,7 @@ const AvailableDoctors = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Get doctors & selectedDoctorId from Redux store
-  const { doctors, loading, selectedDoctorId, error } = useSelector(
+  const { doctors, loading, selectedDoctorId } = useSelector(
     (state) => state.appointment
   );
 
@@ -49,7 +48,6 @@ const AvailableDoctors = () => {
   console.log("doctors", doctors);
   console.log("selectedSpecialty", selectedSpecialty);
 
-  // Filter doctors based on selected specialty
   const filteredDoctors =
     selectedSpecialty === "All Doctors"
       ? doctors
@@ -70,11 +68,11 @@ const AvailableDoctors = () => {
       </Typography>
 
       <Box
-        display="flex"
-        flexDirection={{ xs: "column", sm: "row" }}
-        alignItems="flex-start"
-        gap={2}
         mt={3}
+        gap={2}
+        display="flex"
+        alignItems="flex-start"
+        flexDirection={{ xs: "column", sm: "row" }}
       >
         {/* Specialties List */}
         <Box display="flex" flexDirection="column" gap={2}>
@@ -91,6 +89,9 @@ const AvailableDoctors = () => {
                 px: 3,
                 py: 1,
                 width: { xs: "94vw", sm: "auto", md: "180px" },
+                boxShadow:
+                  selectedSpecialty === specialty &&
+                  "inset 10px 10px 15px rgba(0,0,0,0.05), 15px 25px 20px rgba(0,0,0,.1), 15px 20px 20px rgba(0,0,0,0.05)",
                 backgroundColor:
                   selectedSpecialty === specialty ? "#e2e5ff" : "transparent",
                 color: selectedSpecialty === specialty ? "black" : "#4a5568",

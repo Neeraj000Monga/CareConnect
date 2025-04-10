@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Typography,
   Grid,
-  Button,
   Stack,
   Card,
+  Alert,
+  Button,
   Dialog,
+  Snackbar,
+  Typography,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
-  Snackbar,
-  Alert,
+  DialogContentText,
 } from "@mui/material";
 import Loader from "../../../Loader";
 
@@ -24,7 +24,7 @@ const PatientAppointments = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // 'success' | 'error'
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const storedUser = JSON.parse(localStorage.getItem("user2"));
@@ -59,12 +59,12 @@ const PatientAppointments = () => {
     fetchPatient();
   }, [userId]);
 
-  // Handle cancel appointment
 
   const handleCancelAppointment = async () => {
     if (!selectedDoctorId || !patient.length) return;
 
     const currentPatient = patient[0];
+
     const updatedAppointments = currentPatient.myappointments.filter(
       (appointment) => appointment?.doctorId !== selectedDoctorId
     );
@@ -78,7 +78,7 @@ const PatientAppointments = () => {
     setOpenDialog(false);
 
     try {
-      const response = await fetch(
+      const patientRes = await fetch(
         `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${userId}`,
         {
           method: "PUT",
@@ -89,8 +89,42 @@ const PatientAppointments = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to cancel appointment");
+      if (!patientRes.ok) {
+        throw new Error("Failed to cancel appointment for patient");
+      }
+
+      const doctorRes = await fetch(
+        `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor/${selectedDoctorId}`
+      );
+
+      if (!doctorRes.ok) {
+        throw new Error("Failed to fetch doctor data");
+      }
+
+      const doctorData = await doctorRes.json();
+
+      const updatedDoctorAppointments = doctorData.appointments?.filter(
+        (appt) => appt?.patientId !== userId
+      );
+
+      const updatedDoctorData = {
+        ...doctorData,
+        appointments: updatedDoctorAppointments,
+      };
+
+      const updateDoctorRes = await fetch(
+        `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor/${selectedDoctorId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedDoctorData),
+        }
+      );
+
+      if (!updateDoctorRes.ok) {
+        throw new Error("Failed to cancel appointment for doctor");
       }
 
       setSnackbarMessage("Appointment successfully cancelled.");
@@ -124,26 +158,34 @@ const PatientAppointments = () => {
           <Stack key={index} gap={2}>
             {item?.myappointments?.map((appointment, i) => (
               <Card sx={{ p: 2 }} key={i}>
-                <Grid container spacing={2}>
-                  {/* Doctor Image */}
-                  <Grid item xs={12} sm={12} md={2.5}>
-                    <Box
+                <Stack
+                  gap={2}
+                  flexDirection="row"
+                  justifyContent="space-between"
+                >
+                  <Stack
+                    gap={2}
+                    sx={(theme) => ({
+                      flexDirection: "column",
+                      [theme.breakpoints.up("md")]: {
+                        flexDirection: "row",
+                      },
+                    })}
+                  >
+                    <Stack
                       component="img"
                       src={appointment?.profilePic}
                       alt={appointment?.doctorName || "Doctor"}
                       sx={{
                         backgroundColor: "#f0f0ff",
                         borderRadius: 2,
-                        width: "210px",
+                        maxWidth: "210px",
                         height: "210px",
                         objectFit: "cover",
                       }}
                     />
-                  </Grid>
 
-                  {/* Appointment Details */}
-                  <Grid item xs={12} sm={12} md={7}>
-                    <Box sx={{ color: "grey.700" }}>
+                    <Stack sx={{ color: "grey.700" }}>
                       {appointment?.doctorName && (
                         <>
                           <Typography
@@ -181,11 +223,10 @@ const PatientAppointments = () => {
                           </Typography>
                         </Box>
                       </Box>
-                    </Box>
-                  </Grid>
+                    </Stack>
+                  </Stack>
 
-                  {/* Action Buttons */}
-                  <Grid item xs={12} sm={12} md={2.5}>
+                  <Stack>
                     <Stack
                       sx={{
                         height: "100%",
@@ -231,8 +272,8 @@ const PatientAppointments = () => {
                         Cancel Appointment
                       </Button>
                     </Stack>
-                  </Grid>
-                </Grid>
+                  </Stack>
+                </Stack>
               </Card>
             ))}
           </Stack>
@@ -246,7 +287,9 @@ const PatientAppointments = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={() => setOpenDialog(false)}>No</Button>
+          <Button variant="contained" onClick={() => setOpenDialog(false)}>
+            No
+          </Button>
           <Button
             onClick={handleCancelAppointment}
             color="error"

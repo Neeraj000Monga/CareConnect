@@ -1,10 +1,4 @@
-import {
-  Box,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-} from "@mui/material";
+import { Box, Typography, Card, CardMedia, CardContent } from "@mui/material";
 import { useSelector } from "react-redux";
 
 const RelatedDoctors = () => {
@@ -54,11 +48,11 @@ const RelatedDoctors = () => {
             <Card
               sx={{
                 width: "215px",
-                border: "1px solid #c9d8ff",
                 borderRadius: 2,
                 overflow: "hidden",
                 cursor: "pointer",
                 transition: "transform 0.5s",
+                border: "1px solid #c9d8ff",
                 "&:hover": { transform: "translateY(-10px)" },
               }}
               key={item.id}
@@ -71,11 +65,11 @@ const RelatedDoctors = () => {
               />
               <CardContent>
                 <Box
-                  display="flex"
-                  alignItems="center"
                   gap={1}
-                  textAlign="center"
+                  display="flex"
                   color="#22c55e"
+                  textAlign="center"
+                  alignItems="center"
                 >
                   <Box
                     width={8}

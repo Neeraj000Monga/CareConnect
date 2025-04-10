@@ -12,20 +12,19 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {
+  FaUsers,
   FaUserMd,
   FaCalendarDay,
   FaCalendarCheck,
-  FaUsers,
 } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
-import { MdAssignmentTurnedIn, MdDashboard } from "react-icons/md";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { AppBar, Button, Container, Toolbar } from "@mui/material";
-// import logo from "../images/CareConnectLogoApp.png";
-import CareConnectLogo from "../../assets/CareConnectLogo.png";
-import { RiFileList3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { RiFileList3Fill } from "react-icons/ri";
+import { useLocation, useNavigate } from "react-router-dom";
+import CareConnectLogo from "../../assets/CareConnectLogo.png";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { AppBar, Button, Container, Toolbar } from "@mui/material";
+import { MdAssignmentTurnedIn, MdDashboard } from "react-icons/md";
 
 const drawerWidth = 200;
 
@@ -36,7 +35,7 @@ const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
-  backgroundColor: "#fff", // Matching navbar
+  backgroundColor: "#fff",
   color: "#000",
 });
 
@@ -50,7 +49,7 @@ const closedMixin = (theme) => ({
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(7)} + 1px)`,
   },
-  backgroundColor: "#fff", // Matching navbar
+  backgroundColor: "#fff",
   color: "#000",
 });
 
@@ -73,7 +72,9 @@ const Drawer = styled(MuiDrawer, {
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const theme = useTheme();
-  const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
+  const isLgUp = useMediaQuery(theme.breakpoints.up("md"));
+  const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
+
   const [open, setOpen] = useState(isLgUp);
   const location = useLocation();
   const navigate = useNavigate();
@@ -88,6 +89,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isMdDown) {
+      toggleSidebar(false); // 👈 Auto-close on md and down
+    }
+  }, [isMdDown, toggleSidebar]);
+
+  useEffect(() => {
+    if (isLgUp) {
+      toggleSidebar(true);
+    }
+  }, [isLgUp, toggleSidebar]);
 
   const menuItems = {
     patient: [
@@ -154,8 +167,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   const handleDrawerToggle = () => {
-    setOpen(!open);
-    toggleSidebar(!open);
+    const newState = !open;
+    setOpen(newState);
+    toggleSidebar(newState);
   };
 
   const handleLogout = () => {
@@ -175,7 +189,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-            {/* Logo and Brand Name */}
+            {/* Logo */}
             <Box
               component="img"
               src={CareConnectLogo}
@@ -183,7 +197,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               sx={{ width: 200, marginLeft: "22px" }}
             />
 
-            {/* Buttons (Login) */}
+            {/* Logout Button */}
             <Box sx={{ display: "flex", gap: "12px" }}>
               <Button
                 variant="contained"
@@ -206,14 +220,15 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </Toolbar>
         </Container>
       </AppBar>
-      {/* Toggle Button */}
+
+      {/* Toggle Icon */}
       <Box sx={{ position: "fixed", left: "2px", zIndex: 9999, top: "12px" }}>
         <IconButton sx={{ color: "#000" }} onClick={handleDrawerToggle}>
           {open ? <ChevronLeftIcon sx={{ fontSize: "28px" }} /> : <MenuIcon />}
         </IconButton>
       </Box>
 
-      {/* Sidebar Drawer */}
+      {/* Drawer Sidebar */}
       <Drawer
         variant="permanent"
         open={open}
