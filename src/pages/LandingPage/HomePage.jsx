@@ -7,7 +7,7 @@ import Banner from '../../components/home/Banner'
 
 const HomePage = () => {
   return (
-    <Box sx={{ ml: { xs: 2, sm: "10%" },mr:{ xs: 2, sm: "8%" }, pr:'10px' }}>
+    <Box sx={{ ml: { xs: 2, sm: "10%" },mr:{ xs: 2, sm: "8%" }, pr: { xs: 0, md: "10px"}}}>
         <Header/>
         <HowItWorks/>
         <TopDoctors/>

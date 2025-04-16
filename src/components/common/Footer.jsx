@@ -22,7 +22,7 @@ const Footer = () => {
   return (
     <Box sx={{ p: 2 }}>
       <Divider sx={{ my: 3 }} />
-      <Grid container spacing={2} justifyContent="center">
+      <Grid container spacing={2} sx={{ justifyContent: { xs: "start", sm: "center" } }}>
         {/* Company Info */}
         <Grid item sm={12} md={6} lg={4}>
           <Box

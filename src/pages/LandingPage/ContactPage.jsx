@@ -4,7 +4,7 @@ import ContactUsImage from "../../assets/contact_image.png";
 
 const ContactPage = () => {
   return (
-    <Box sx={{ ml: { xs: 2, sm: "10%" },mr:{ xs: 2, sm: "8%" }, pr:'10px' }}>
+    <Box sx={{ ml: { xs: 2, sm: "10%" },mr:{ xs: 2, sm: "8%" }, pr: { xs: 0, md: "10px"} }}>
       {/* Header */}
       <Box sx={{ textAlign: "center", pt: 12,display:'flex',justifyContent:'center',gap:'4px',marginTop:'20px' }}>
         <Typography variant="h5" sx={{ color: "gray" }}>

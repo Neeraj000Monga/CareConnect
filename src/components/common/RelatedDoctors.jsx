@@ -59,7 +59,7 @@ const RelatedDoctors = () => {
           relatedDoctors.map((item) => (
             <Card
               sx={{
-                width: "215px",
+                width:  { xs: "100%", sm: "215px" } ,
                 borderRadius: 2,
                 overflow: "hidden",
                 cursor: "pointer",
@@ -73,7 +73,7 @@ const RelatedDoctors = () => {
                 component="img"
                 image={item?.profilePic}
                 alt={item?.name}
-                sx={{ bgcolor: "#eaefff", height: "218px", width: "100%" }}
+                sx={{ bgcolor: "#eaefff", height: { xs: "300px", sm: "218px" },  width: "100%" }}
               />
               <CardContent>
                 <Box

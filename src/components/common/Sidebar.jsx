@@ -11,6 +11,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import {
   FaUsers,
   FaUserMd,
@@ -73,7 +75,7 @@ const Drawer = styled(MuiDrawer, {
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const theme = useTheme();
   const isLgUp = useMediaQuery(theme.breakpoints.up("md"));
-  const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
+  const isMdDown = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [open, setOpen] = useState(isLgUp);
   const location = useLocation();
@@ -92,7 +94,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   useEffect(() => {
     if (isMdDown) {
-      toggleSidebar(false); // 👈 Auto-close on md and down
+      toggleSidebar(false);
     }
   }, [isMdDown, toggleSidebar]);
 
@@ -179,6 +181,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <Box>
+      {/* AppBar */}
       <AppBar
         sx={{
           background: "#fff",
@@ -189,15 +192,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-            {/* Logo */}
             <Box
               component="img"
               src={CareConnectLogo}
               alt="CareConnect Logo"
               sx={{ width: 200, marginLeft: "22px" }}
             />
-
-            {/* Logout Button */}
             <Box sx={{ display: "flex", gap: "12px" }}>
               <Button
                 variant="contained"
@@ -222,70 +222,113 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </AppBar>
 
       {/* Toggle Icon */}
-      <Box sx={{ position: "fixed", left: "2px", zIndex: 9999, top: "12px" }}>
-        <IconButton sx={{ color: "#000" }} onClick={handleDrawerToggle}>
-          {open ? <ChevronLeftIcon sx={{ fontSize: "28px" }} /> : <MenuIcon />}
-        </IconButton>
-      </Box>
+      {!isMdDown && (
+        <Box sx={{ position: "fixed", left: "2px", zIndex: 9999, top: "12px" }}>
+          <IconButton sx={{ color: "#000" }} onClick={handleDrawerToggle}>
+            {open ? (
+              <ChevronLeftIcon sx={{ fontSize: "28px" }} />
+            ) : (
+              <MenuIcon />
+            )}
+          </IconButton>
+        </Box>
+      )}
 
-      {/* Drawer Sidebar */}
-      <Drawer
-        variant="permanent"
-        open={open}
-        sx={{
-          "& .MuiDrawer-paper": {
-            zIndex: 0,
-            top: "66px",
-            height: "90vh",
-            display: "flex",
-            background: "#fff",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          },
-        }}
-      >
-        <List>
-          {menuItems[userRole]?.map((item) => (
-            <ListItem key={item.name} disablePadding>
-              <ListItemButton
-                onClick={() => navigate(item.path)}
-                sx={{
-                  px: 2,
-                  py: 1,
-                  minHeight: 48,
-                  borderRight:
-                    location.pathname === item.path
-                      ? "4px solid #2F54EB"
-                      : "none",
-                  justifyContent: open ? "initial" : "center",
-                  color: location.pathname === item.path ? "#000b6d" : "#000",
-                  backgroundColor:
-                    location.pathname === item.path ? "#eaecfb" : "transparent",
-                  "&:hover": { backgroundColor: "#e2e5ff" },
-                }}
-              >
-                <ListItemIcon
+      {/* Sidebar for md+ screens */}
+      {!isMdDown && (
+        <Drawer
+          variant="permanent"
+          open={open}
+          sx={{
+            "& .MuiDrawer-paper": {
+              zIndex: 0,
+              top: "65px",
+              height: "90vh",
+              display: "flex",
+              background: "#fff",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            },
+          }}
+        >
+          <List>
+            {menuItems[userRole]?.map((item) => (
+              <ListItem key={item.name} disablePadding>
+                <ListItemButton
+                  onClick={() => navigate(item.path)}
                   sx={{
-                    minWidth: 0,
-                    color: location.pathname === item.path ? "#000b6d" : "#000",
-                    justifyContent: "center",
-                    mr: open ? 2 : "auto",
+                    px: 2,
+                    py: 1,
+                    minHeight: 48,
+                    borderRight:
+                      location.pathname === item.path
+                        ? "4px solid #2F54EB"
+                        : "none",
+                    justifyContent: open ? "initial" : "center",
+                    color:
+                      location.pathname === item.path ? "#000b6d" : "#000",
+                    backgroundColor:
+                      location.pathname === item.path
+                        ? "#eaecfb"
+                        : "transparent",
+                    "&:hover": { backgroundColor: "#e2e5ff" },
                   }}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.name}
-                  sx={{
-                    opacity: open ? 1 : 0,
-                    color: location.pathname === item.path ? "#000b6d" : "#000",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      color:
+                        location.pathname === item.path ? "#000b6d" : "#000",
+                      justifyContent: "center",
+                      mr: open ? 2 : "auto",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.name}
+                    sx={{
+                      opacity: open ? 1 : 0,
+                      color:
+                        location.pathname === item.path ? "#000b6d" : "#000",
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      )}
+
+      {/* Bottom Navigation for mobile */}
+      {isMdDown && (
+        <BottomNavigation
+          showLabels
+          value={location.pathname}
+          onChange={(event, newValue) => navigate(newValue)}
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            borderTop: "1px solid #ddd",
+            zIndex: 1300,
+            backgroundColor: "#fff",
+          }}
+        >
+          {menuItems[userRole]?.map((item) => (
+            <BottomNavigationAction
+              key={item.name}
+              label={item.name}
+              value={item.path}
+              icon={item.icon}
+              sx={{
+                color: location.pathname === item.path ? "#000b6d" : "#000",
+              }}
+            />
           ))}
-        </List>
-      </Drawer>
+        </BottomNavigation>
+      )}
     </Box>
   );
 };

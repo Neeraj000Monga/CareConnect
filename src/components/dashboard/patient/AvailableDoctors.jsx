@@ -88,7 +88,7 @@ const AvailableDoctors = () => {
                 borderRadius: 1,
                 px: 3,
                 py: 1,
-                width: { xs: "94vw", sm: "auto", md: "180px" },
+                width: { xs: "89vw", sm: "auto", md: "180px" },
                 boxShadow:
                   selectedSpecialty === specialty &&
                   "inset 10px 10px 15px rgba(0,0,0,0.05), 15px 25px 20px rgba(0,0,0,.1), 15px 20px 20px rgba(0,0,0,0.05)",
@@ -122,7 +122,7 @@ const AvailableDoctors = () => {
                     selectedDoctorId === item.id
                       ? "2px solid rgb(144, 175, 255)"
                       : "1px solid #c9d8ff",
-                  width: "250px",
+                  width: { xs: "100%", sm: "250px" },
                   borderRadius: 2,
                   overflow: "hidden",
                   cursor: "pointer",
@@ -136,7 +136,7 @@ const AvailableDoctors = () => {
                   component="img"
                   image={item?.profilePic}
                   alt="image"
-                  sx={{ bgcolor: "#eaefff", height: "218px", width: "100%" }}
+                  sx={{ bgcolor: "#eaefff", objectFit: "inherit", height: { xs: "280", sm: "218px" }, width: "100%" }}
                 />
                 <CardContent>
                   <Box

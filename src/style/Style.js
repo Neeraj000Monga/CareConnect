@@ -26,7 +26,7 @@ export const HeaderCell = styled(Box)(({ theme }) => ({
   width: "100%",
   height: "40px",
   display: "flex",
-  minWidth: "50px",
+  minWidth: "40px",
   alignItems: "center",
   background: "#cccccc45",
   justifyContent: "center",
@@ -43,7 +43,7 @@ export const DayText = styled(Typography)(({ active, isPast }) => ({
 
 export const DayCell = styled(Box)(({ active, isToday, isPast, theme }) => ({
   height: "35px",
-  minWidth: "50px",
+  minWidth: "40px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -52,18 +52,18 @@ export const DayCell = styled(Box)(({ active, isToday, isPast, theme }) => ({
   backgroundColor: active
     ? " #1eb700"
     : isToday
-    ? " #ffd700"
-    : isPast
-    ? " #ffcfcf"
-    : "transparent",
+      ? " #ffd700"
+      : isPast
+        ? " #ffcfcf"
+        : "transparent",
   "&:hover": {
     backgroundColor: isPast
       ? " #ffcfcf"
       : active
-      ? " #1a9f00"
-      : isToday
-      ? " #ffc107"
-      : " #cccccc2e",
+        ? " #1a9f00"
+        : isToday
+          ? " #ffc107"
+          : " #cccccc2e",
   },
 }));
 
@@ -97,10 +97,15 @@ export const DoctorCard = styled(Paper)(({ theme }) => ({
   flex: 1,
   border: "1px solid #BDBDBD",
   borderRadius: "8px",
-  padding: "20px 30px",
+  padding: "12px 16px",
   backgroundColor: "#fff",
+  position: "relative",
+  bottom: "50px",
+  margin: "0px 10px",
   [theme.breakpoints.up("sm")]: {
     marginTop: 0,
+    padding: "20px 30px",
+    bottom: "0px",
     marginLeft: theme.spacing(2),
   },
 }));

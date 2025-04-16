@@ -89,18 +89,18 @@ const HowItWorks = () => {
     <Box
       sx={(theme) => ({
         width: "100%",
-        height: "auto",
+        py: 25,
         display: "flex",
         flexDirection: "column",
         [theme.breakpoints.up("md")]: {
           flexDirection: "row",
-          height: "70vh",
+          py: 2,
         },
       })}
     >
       <HowItWorksSection>
         <Container>
-          <Typography variant="h3" gutterBottom sx={{ fontWeight: "bold" }}>
+          <Typography sx={{fontSize: { xs: "2.5rem", md: "3rem"}, fontWeight: "bold"  }} gutterBottom >
             How It Works!
           </Typography>
           <Typography variant="body1" gutterBottom>

@@ -35,6 +35,7 @@ import {
   WeekdayText,
   Wrapper,
 } from "../../../style/Style";
+import { Years } from "../../../style/Buttons";
 
 const timeSlots = [];
 let startHour = 10;
@@ -46,9 +47,8 @@ for (let hour = startHour; hour < endHour; hour++) {
     let formattedHour = hour > 12 ? hour - 12 : hour;
     formattedHour = formattedHour === 0 ? 12 : formattedHour;
 
-    let timeString = `${formattedHour}:${
-      minutes === 0 ? "00" : "30"
-    } ${period}`;
+    let timeString = `${formattedHour}:${minutes === 0 ? "00" : "30"
+      } ${period}`;
     timeSlots.push({ time: timeString });
   }
 }
@@ -236,9 +236,10 @@ const BookAppointment = () => {
               alt="Selected Doctor"
               sx={{
                 width: "100%",
-                maxWidth: 288,
+                maxWidth: { xs: "100%", sm: "288px" },
                 height: "250px",
                 bgcolor: "#eaefff",
+                objectFit: "inherit",
                 borderRadius: "8px",
                 border: "1px solid #c9d8ff",
               }}
@@ -263,17 +264,13 @@ const BookAppointment = () => {
                 <Typography>
                   {item?.degree} - {item.specialization}
                 </Typography>
-                <Button
+                <Years
                   variant="outlined"
                   size="small"
-                  sx={{
-                    borderRadius: "999px",
-                    fontSize: "12px",
-                    padding: "2px 8px",
-                  }}
+
                 >
                   {`${item.experience} Years`}
-                </Button>
+                </Years>
               </Box>
               <Box>
                 <Box display="flex" alignItems="center" gap={1}>
@@ -315,7 +312,7 @@ const BookAppointment = () => {
         ))}
 
       {selectedDoctorId?.length > 0 && (
-        <Paper sx={{ p: 2, mt: 3 }}>
+        <Paper sx={{ p: { xs: 1.3, sm: 2 }, mt: { xs: 0, sm: 3 } }}>
           <Typography
             sx={{
               mb: 2,
@@ -326,13 +323,11 @@ const BookAppointment = () => {
           >
             {activeDay
               ? activeSlots
-                ? `Selected: ${
-                    currentMonth + 1
-                  }-${activeDay}-${currentYear} ${activeSlots}`
+                ? `Selected: ${currentMonth + 1
+                }-${activeDay}-${currentYear} ${activeSlots}`
                 : "Select an available time"
-              : `Today's Date: ${
-                  currentMonth + 1
-                } ${currentDate}, ${currentYear}`}
+              : `Today's Date: ${currentMonth + 1
+              } ${currentDate}, ${currentYear}`}
           </Typography>
           <Box>
             <Stack sx={{ alignItems: "center" }}>
@@ -444,8 +439,8 @@ const BookAppointment = () => {
                 {loading
                   ? "Booking..."
                   : confirmed
-                  ? "Appointment Confirmed"
-                  : "Book an Appointment"}
+                    ? "Appointment Confirmed"
+                    : "Book an Appointment"}
               </Button>
             </Stack>
           )}
@@ -466,7 +461,7 @@ const BookAppointment = () => {
         </Paper>
       )}
 
-      <Card sx={{ p: 2, mt: 3 }}>
+      <Card sx={{ p: { xs: 1.3, sm: 2 }, mt: 3 }}>
         <RelatedDoctors />
       </Card>
     </Box>

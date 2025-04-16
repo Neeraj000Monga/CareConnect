@@ -4,7 +4,7 @@ import AboutImage from "../../assets/about_image.png";
 
 const AboutPage = () => {
   return (
-    <Box sx={{ ml: { xs: 2, sm: "10%" }, mr: { xs: 2, sm: "8%" }, pr: "10px" }}>
+    <Box sx={{ ml: { xs: 2, sm: "10%" }, mr: { xs: 2, sm: "8%" }, pr: { xs: 0, md: "10px"}}}>
       <Typography variant="h5" align="center" color="gray" pt={12}>
         ABOUT <span style={{ color: "#374151", fontWeight: "bold" }}>US</span>
       </Typography>

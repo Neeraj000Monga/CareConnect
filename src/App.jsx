@@ -60,9 +60,10 @@ function App() {
             )}
           </Routes>
         </Box>
-        <Box sx={{ ml: isDashboard ? "200px" : "" }}>
+        <Box sx={{ ml: { xs: "0px", md: isDashboard ? "200px" : "0px", }, }}>
           <Footer />
         </Box>
+
       </Provider>
     </ThemeProvider>
   );

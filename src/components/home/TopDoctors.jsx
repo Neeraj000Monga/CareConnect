@@ -254,73 +254,72 @@ const doctors = [
 const TopDoctors = () => {
   return (
     <Box
+      gap={4}
+      mx={{ md: 5 }}
       display="flex"
       flexDirection="column"
       alignItems="center"
-      gap={4}
       color="text.primary"
-      mx={{ md: 5 }}
     >
-      <Typography variant="h3" fontWeight="medium">
+      <Typography  sx={{fontSize: { xs: "37px", md: "3rem"} }} fontWeight="medium" >
         Top Doctors to Book
       </Typography>
       <Typography
         textAlign="center"
         sx={{ width: { sm: "33%" } }}
-        fontSize="0.875rem"
         color="text.secondary"
       >
         Simply browse through our extensive list of trusted doctors.
       </Typography>
 
-      <Box sx={{ width: "100%", display: "flex", flexWrap: "wrap", gap: "20px", px: { xs: 3, sm: 0 } }}>
+      <Box sx={{ width: "100%", display: "flex", flexWrap: "wrap", gap: "20px" }}>
         {doctors.slice(0, 10).map((item, index) => (
-            <Card
-              sx={{
-                width: "215px" ,
-                border: "1px solid #c9d8ff",
-                borderRadius: 2,
-                overflow: "hidden",
-                cursor: "pointer",
-                transition: "transform 0.5s",
-                "&:hover": { transform: "translateY(-10px)" },
-              }}
-              key={index}
-            >
-              <CardMedia
-                component="img"
-                image={item.image}
-                alt=""
-                sx={{ bgcolor: "#eaefff", height: "218px", width: "100%" }}
-              />
-              <CardContent>
+          <Card
+            sx={{
+              width: { xs: "100%", sm: "215px" },
+              border: "1px solid #c9d8ff",
+              borderRadius: 2,
+              overflow: "hidden",
+              cursor: "pointer",
+              transition: "transform 0.5s",
+              "&:hover": { transform: "translateY(-10px)" },
+            }}
+            key={index}
+          >
+            <CardMedia
+              component="img"
+              image={item.image}
+              alt=""
+              sx={{ bgcolor: "#eaefff", height: { xs: "300px", sm: "218px" }, width: "100%" }}
+            />
+            <CardContent>
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={1}
+                textAlign="center"
+                color="#22c55e"
+              >
                 <Box
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  textAlign="center"
-                  color="#22c55e"
-                >
-                  <Box
-                    width={8}
-                    height={8}
-                    bgcolor="#22c55e"
-                    borderRadius="50%"
-                  />
-                  <Typography variant="body2">Available</Typography>
-                </Box>
-                <Typography
-                  variant="h6"
-                  fontWeight="medium"
-                  color="text.primary"
-                >
-                  {item.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.speciality}
-                </Typography>
-              </CardContent>
-            </Card>
+                  width={8}
+                  height={8}
+                  bgcolor="#22c55e"
+                  borderRadius="50%"
+                />
+                <Typography variant="body2">Available</Typography>
+              </Box>
+              <Typography
+                variant="h6"
+                fontWeight="medium"
+                color="text.primary"
+              >
+                {item.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {item.speciality}
+              </Typography>
+            </CardContent>
+          </Card>
         ))}
       </Box>
 
