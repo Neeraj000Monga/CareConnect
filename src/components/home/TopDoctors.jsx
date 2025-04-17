@@ -21,6 +21,7 @@ import {
   CardContent,
   CardMedia,
   Typography,
+  useTheme,
 } from "@mui/material";
 
 const doctors = [
@@ -252,6 +253,9 @@ const doctors = [
 ];
 
 const TopDoctors = () => {
+
+  const theme = useTheme();
+
   return (
     <Box
       gap={4}
@@ -261,7 +265,7 @@ const TopDoctors = () => {
       alignItems="center"
       color="text.primary"
     >
-      <Typography  sx={{fontSize: { xs: "37px", md: "3rem"} }} fontWeight="medium" >
+      <Typography sx={{ fontSize: { xs: "37px", md: "3rem" } }} fontWeight="medium" >
         Top Doctors to Book
       </Typography>
       <Typography
@@ -326,14 +330,14 @@ const TopDoctors = () => {
       <Button
         variant="contained"
         sx={{
-          bgcolor: "#EFF6FF",
-          color: "text.secondary",
           px: 6,
-          py: 1.5,
-          borderRadius: "50px",
           mt: 2,
-          textTransform: "none",
+          py: 1.5,
           fontWeight: "600",
+          borderRadius: "50px",
+          textTransform: "none",
+          color: "text.secondary",
+          backgroundColor: theme.palette.mode === "dark" ? "#212121" : "#e8eced",
         }}
       >
         more

@@ -1,6 +1,5 @@
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box, createTheme, CssBaseline, Paper, ThemeProvider } from "@mui/material";
 import { Route, Routes, useLocation } from "react-router-dom";
-import theme from "./theme";
 import Navbar from "./components/common/Navbar";
 import HomePage from "./pages/LandingPage/HomePage";
 import AboutPage from "./pages/LandingPage/AboutPage";
@@ -13,6 +12,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import Apruble from "./components/dashboard/doctor/Apruble";
+import { useState } from "react";
 
 function App() {
   const getUserRole = () => localStorage.getItem("userRole");
@@ -23,11 +23,19 @@ function App() {
     location.pathname.startsWith("/doctor") ||
     location.pathname.startsWith("/admin");
 
+  const [mode, setMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: mode ? "light" : "dark",
+    },
+  });
+
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <CssBaseline />
-        {!isDashboard && <Navbar />}
+        {!isDashboard && <Navbar mode={mode} setMode={setMode} />}
         <Box sx={{ minHeight: "47.5vh" }}>
           <Routes>
             {/* Public Routes */}
@@ -63,7 +71,6 @@ function App() {
         <Box sx={{ ml: { xs: "0px", md: isDashboard ? "200px" : "0px", }, }}>
           <Footer />
         </Box>
-
       </Provider>
     </ThemeProvider>
   );

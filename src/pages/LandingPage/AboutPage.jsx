@@ -1,12 +1,15 @@
 import React from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid, useTheme } from "@mui/material";
 import AboutImage from "../../assets/about_image.png";
 
 const AboutPage = () => {
+
+  const theme = useTheme();
+
   return (
-    <Box sx={{ ml: { xs: 2, sm: "10%" }, mr: { xs: 2, sm: "8%" }, pr: { xs: 0, md: "10px"}}}>
+    <Box sx={{ ml: { xs: 2, sm: "10%" }, mr: { xs: 2, sm: "8%" }, pr: { xs: 0, md: "10px" } }}>
       <Typography variant="h5" align="center" color="gray" pt={12}>
-        ABOUT <span style={{ color: "#374151", fontWeight: "bold" }}>US</span>
+        ABOUT <span style={{ fontWeight: "bold", color: theme.palette.mode === "dark" ? "#92a6c5" : "#374151", }}>US</span>
       </Typography>
 
       <Grid container spacing={4} my={5} alignItems="center">
@@ -33,7 +36,7 @@ const AboutPage = () => {
               managing ongoing care, CareConnect is here to support you every
               step of the way.
             </Typography>
-            <Typography variant="h6" color="black" fontWeight="bold">
+            <Typography variant="h6" fontWeight="bold" sx={{ color: theme.palette.mode === "dark" ? "white" : "black", }}>
               Our Vision
             </Typography>
             <Typography variant="body1">
@@ -47,8 +50,8 @@ const AboutPage = () => {
       </Grid>
 
       <Typography variant="h6" my={3}>
-        WHY{" "}
-        <span style={{ color: "#374151", fontWeight: "bold" }}>CHOOSE US</span>
+        WHY
+        <span style={{ color: theme.palette.mode === "dark" ? "#92a6c5" : "#374151", fontWeight: "bold" }}>CHOOSE US</span>
       </Typography>
 
       <Box display="flex" flexDirection={{ xs: "column", md: "row" }} mb={5}>
@@ -75,7 +78,6 @@ const AboutPage = () => {
               py: { xs: 4, sm: 8 },
               display: "flex",
               flexDirection: "column",
-              // gap: 1.25,
               fontSize: "15px",
               color: "text.secondary",
               cursor: "pointer",

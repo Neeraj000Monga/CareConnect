@@ -129,7 +129,7 @@ const HowItWorks = () => {
                       },
                     }}
                   >
-                    <StepCard>{step.icon}</StepCard>
+                    <StepCard sx={{color: "black"}}>{step.icon}</StepCard>
                   </Badge>
                   <Typography variant="h6" mt={2} sx={{ fontWeight: "bold" }}>
                     {step.title}

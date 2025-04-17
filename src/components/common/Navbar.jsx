@@ -1,13 +1,15 @@
-import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
+import Button from "@mui/material/Button";
+import { NavLink } from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-// import logo from "../images/CareConnectLogoApp.png";
+import ToggleSwitch from "../../components/ToggleSwitch"
 import CareConnectLogo from '../../assets/CareConnectLogo.png'
+import { useTheme } from "@mui/material";
 
-function NavBar() {
+function NavBar({ setMode, mode }) {
+  const theme = useTheme();
   const handleAdmin = () => {
     localStorage.setItem("userRole", "admin");
     window.location.href = "/login";
@@ -15,35 +17,17 @@ function NavBar() {
   return (
     <AppBar
       sx={{
-        background: "#fff",
         position: "fixed",
         boxShadow: "none",
-        borderBottom: "1px solid #ddd",
+        background: theme.palette.mode === "dark" ? "#212121" : "#fff",
+        borderBottom: theme.palette.mode === "dark" ? "1px solid #3c3b3b" : "1px solid #ddd"
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ paddingRight: "0px !important", }}>
         <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
           {/* Logo and Brand Name */}
-          <Box component="img" src={CareConnectLogo} alt="CareConnect Logo" sx={{  width: 200 }} />
-          {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={logo}
-              style={{ height: "35px", width: "auto" }}
-              alt="CareConnectLogo"
-            />
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: "bold",
-                color: "#000b6d",
-                ml: 1,
-              }}
-            >
-              CareConnect
-            </Typography>
-          </Box> */}
+          <Box component="img" src={CareConnectLogo} alt="CareConnect Logo" sx={{ width: 200 }} />
 
-          {/* Navigation Links */}
           <Box sx={{ display: "flex", alignItems: "center", gap: "30px" }}>
             {["/", "/about", "/contact"].map((path, index) => {
               const labels = ["HOME", "ABOUT", "CONTACT"];
@@ -53,7 +37,13 @@ function NavBar() {
                   to={path}
                   style={({ isActive }) => ({
                     textDecoration: "none",
-                    color: isActive ? "#000b6d" : "#000",
+                    color: isActive
+                      ? theme.palette.mode === "dark"
+                        ? "#192ff3"
+                        : "#000b6d"
+                      : theme.palette.mode === "dark"
+                        ? "#fff"
+                        : "#000",
                     fontWeight: isActive ? "600" : "500",
                     fontSize: "14px",
                     padding: "10px 0",
@@ -110,7 +100,7 @@ function NavBar() {
           </Box>
 
           {/* Buttons (Login) */}
-          <Box sx={{ display: "flex", gap: "12px" }}>
+          <Box sx={{ display: "flex", gap: "22px" }}>
             <Button
               component={NavLink}
               to="/roleSelection"
@@ -129,6 +119,7 @@ function NavBar() {
             >
               Login Account
             </Button>
+            <ToggleSwitch mode={mode} setMode={setMode} />
           </Box>
         </Toolbar>
       </Container>
