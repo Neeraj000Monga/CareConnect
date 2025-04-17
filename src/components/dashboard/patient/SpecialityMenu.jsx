@@ -35,18 +35,20 @@ const specialityData = [
 ];
 
 const SpecialityMenu = () => {
+
   return (
-    <Box>
+    <Stack>
       <Typography variant="h6" fontWeight="bold" ml={2}>
         Find by Speciality
       </Typography>
-
       <Stack
         sx={{
           flexDirection: "row",
           overflowX: "scroll",
+          maxWidth: { xs: "310px", sm: "600px", lg: "100%" }
         }}
       >
+
         {specialityData.map((item, index) => (
           <Box key={index} sx={{ width: "120px" }}>
             <Link
@@ -70,7 +72,7 @@ const SpecialityMenu = () => {
                   component="img"
                   src={item.image}
                   alt="Speciality"
-                  sx={{ width: { xs: 40, sm: 66 }, mb: 1, height: "85px" }}
+                  sx={{ width: 66, height: "85px" }}
                 />
                 <Typography variant="body2" sx={{ fontSize: "12px" }}>
                   {item.speciality}
@@ -80,7 +82,7 @@ const SpecialityMenu = () => {
           </Box>
         ))}
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 

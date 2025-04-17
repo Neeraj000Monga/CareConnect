@@ -20,6 +20,7 @@ import { signupUser } from "../../redux/signupSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FormWrapper } from "../../style/Style";
 
 const specializations = [
   "Cardiology",
@@ -80,12 +81,6 @@ const Signup = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setFormData({ ...formData, profilePic: file });
-  //   }
-  // };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -97,8 +92,8 @@ const Signup = () => {
 
     const imageData = new FormData();
     imageData.append("file", file);
-    imageData.append("upload_preset", "careconnet"); // Ensure this is your correct preset
-    imageData.append("cloud_name", "careconnet2"); // Your Cloudinary cloud name
+    imageData.append("upload_preset", "careconnet");
+    imageData.append("cloud_name", "careconnet2");
 
     try {
       const response = await axios.post(
@@ -150,17 +145,16 @@ const Signup = () => {
               </label>
 
               <Typography variant="caption" color="#6b7280" fontSize={20}>
-                Upload Profile <br /> Picture
+                Upload Profile  Picture
               </Typography>
             </Box>
-            <Typography sx={{ fontSize: "18px" }}>create account</Typography>
           </Stack>
           {/* Form Fields */}
           <form
             style={{ display: "flex", flexDirection: "column", gap: "20px" }}
             onSubmit={handleSubmit}
           >
-            <Stack flexDirection="row" gap="20px">
+            <FormWrapper >
               <TextFields
                 sx={{ borderRadius: "4px !important" }}
                 fullWidth
@@ -179,8 +173,8 @@ const Signup = () => {
                 required
                 size="small"
               />
-            </Stack>
-            <Stack flexDirection="row" gap="20px">
+            </FormWrapper>
+            <FormWrapper >
               <TextFields
                 fullWidth
                 select
@@ -204,11 +198,11 @@ const Signup = () => {
                 required
                 size="small"
               />
-            </Stack>
+            </FormWrapper>
 
             {role === "patient" ? (
               <Stack gap="20px">
-                <Stack flexDirection="row" gap="20px">
+                <FormWrapper >
                   <TextFields
                     fullWidth
                     label="Weight (Kg/ibs)"
@@ -228,8 +222,8 @@ const Signup = () => {
                     required
                     size="small"
                   />
-                </Stack>
-                <Stack flexDirection="row" gap="20px">
+                </FormWrapper>
+                <FormWrapper >
                   <TextFields
                     fullWidth
                     select
@@ -276,11 +270,11 @@ const Signup = () => {
                       )
                     )}
                   </TextFields>
-                </Stack>
+                </FormWrapper>
               </Stack>
             ) : (
               <Stack gap="20px">
-                <Stack flexDirection="row" gap="20px">
+                <FormWrapper >
                   <TextFields
                     fullWidth
                     label="Degree"
@@ -305,8 +299,8 @@ const Signup = () => {
                       </MenuItem>
                     ))}
                   </TextFields>
-                </Stack>
-                <Stack flexDirection="row" gap="20px">
+                </FormWrapper>
+                <FormWrapper >
                   <TextFields
                     fullWidth
                     label="Hospital Name"
@@ -330,8 +324,8 @@ const Signup = () => {
                       </MenuItem>
                     ))}
                   </TextFields>
-                </Stack>
-                <Stack flexDirection="row" gap="20px">
+                </FormWrapper>
+                <FormWrapper >
                   <TextFields
                     fullWidth
                     label="License Number"
@@ -350,11 +344,11 @@ const Signup = () => {
                     required
                     size="small"
                   />
-                </Stack>
+                </FormWrapper>
               </Stack>
             )}
 
-            <Stack flexDirection="row" gap="20px">
+            <FormWrapper >
               <TextFields
                 fullWidth
                 size="small"
@@ -391,7 +385,7 @@ const Signup = () => {
                   ),
                 }}
               />
-            </Stack>
+            </FormWrapper>
 
             {/* Submit Button */}
             <Box textAlign="center">

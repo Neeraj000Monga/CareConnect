@@ -1,4 +1,4 @@
-import { Box, Button, Paper, styled, Typography } from "@mui/material";
+import { Box, Button, Paper, styled, Typography, Stack } from "@mui/material";
 
 export const DaysWrapper = styled(Box)({
   gap: "2px",
@@ -107,5 +107,14 @@ export const DoctorCard = styled(Paper)(({ theme }) => ({
     padding: "20px 30px",
     bottom: "0px",
     marginLeft: theme.spacing(2),
+  },
+}));
+
+
+export const FormWrapper = styled(Stack)(({ theme }) => ({
+  gap: "20px",
+  flexDirection: "row",
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
   },
 }));

@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { MdNotifications } from "react-icons/md";
+import { fetchUserProfile } from "../../redux/profileSlice";
 import doc9 from "../../assets/doc9.png";
 import doc13 from "../../assets/doc13.png";
 
@@ -11,23 +13,16 @@ const alerts = [
 ];
 
 const RightSideProfile = () => {
-  const [profile, setProfile] = useState(null);
-
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile.user);
+  const status = useSelector((state) => state.profile.status);
   const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user2"));
-    if (!storedUser) return;
-
-    fetch(
-      userRole === "patient"
-        ? `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient/${storedUser}`
-        : `https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Doctor/${storedUser}`
-    )
-      .then((res) => res.json())
-      .then((data) => setProfile(data))
-      .catch((err) => console.error("Error fetching profile:", err));
-  }, []);
+    if (status === "idle") {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, status]);
 
   if (!profile) {
     return <Typography>Loading...</Typography>;
@@ -91,29 +86,19 @@ const RightSideProfile = () => {
                   </Typography>
                   <Typography fontWeight={600}>{profile.weight}</Typography>
                 </Box>
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  sx={{ height: "40px" }}
-                />
+                <Divider orientation="vertical" flexItem sx={{ height: "40px" }} />
                 <Box textAlign="center">
                   <Typography color="#089bab" fontWeight={600}>
                     Height
                   </Typography>
                   <Typography fontWeight={600}>{profile?.height}</Typography>
                 </Box>
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  sx={{ height: "40px" }}
-                />
+                <Divider orientation="vertical" flexItem sx={{ height: "40px" }} />
                 <Box textAlign="center">
                   <Typography color="#089bab" fontWeight={600}>
                     Blood Group
                   </Typography>
-                  <Typography fontWeight={600}>
-                    {profile?.bloodgroup}
-                  </Typography>
+                  <Typography fontWeight={600}>{profile?.bloodgroup}</Typography>
                 </Box>
               </Stack>
             </Box>
@@ -150,11 +135,7 @@ const RightSideProfile = () => {
                   </Typography>
                   <Typography fontWeight={600}>{profile?.licenseNo}</Typography>
                 </Box>
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  sx={{ height: "40px" }}
-                />
+                <Divider orientation="vertical" flexItem sx={{ height: "40px" }} />
                 <Box textAlign="center">
                   <Typography color="#089bab" fontWeight={600}>
                     Fees

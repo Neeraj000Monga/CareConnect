@@ -1,17 +1,28 @@
+import React from "react";
 import SpecialityMenu from "./SpecialityMenu";
 import RigthSideProfile from "../../common/RigthSideProfile";
-import { Box, Typography, Divider, Grid } from "@mui/material";
+import { Box, Typography, Divider, Grid, Stack } from "@mui/material";
 import LatestAppointment from "../../common/LatestAppointment";
 import PatientHealth from "../../../assets/healthy_image-removebg-preview.png";
+import { useSelector } from "react-redux";
 
 const PatientDashboard = () => {
 
-  
+  const profile = useSelector((state) => state.profile.user);
+
+  console.log("profile", profile)
+
+  const currentDate = new Date().toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
   return (
     <Box sx={{ mt: 5 }}>
       <Grid container>
-        <Grid item xs={8}>
+        <Grid item xs={12} sm={8}>
           <Box
             sx={{
               my: "20px",
@@ -24,26 +35,36 @@ const PatientDashboard = () => {
               Dashboard
             </Typography>
             <Typography color="text.secondary" fontWeight="600">
-              Friday, 28 Feb, 2025
+              {currentDate}
             </Typography>
           </Box>
           <Divider />
+
           {/* Welcome Section */}
           <Box
-            sx={{
-              p: 3,
+            sx={(theme) => ({
               borderRadius: 2,
               display: "flex",
               alignItems: "center",
+              flexDirection: "row",
+              margin: "0px 10px",
               justifyContent: "space-between",
-            }}
+              [theme.breakpoints.down("sm")]: {
+                flexDirection: "column-reverse",
+                margin: "0px",
+              },
+            })}
           >
             <Box>
-              <Typography variant="h5" fontWeight="bold" color="primary.dark">
-                Welcome to CareConnect, Vishal! 👋
-              </Typography>
+              <Stack flexDirection="row" gap={1}>
+                <Typography variant="h5" fontWeight="bold" color="primary.dark">
+                  Welcome to CareConnect,
+                </Typography>
+                <Typography variant="h5" fontWeight="bold"> {profile?.name}! 👋</Typography>
+              </Stack>
               <Typography color="text.secondary">
-                You have <b style={{ color: "red" }}>1 Appointment</b> today!
+                You have <b style={{ color: "red" }}>{profile?.
+                  myappointments?.length || 0} Appointment</b> today!
               </Typography>
               <Typography color="gray">
                 Remember to check documentation before the call.
@@ -52,10 +73,13 @@ const PatientDashboard = () => {
             <img src={PatientHealth} alt="health" width={180} height={120} />
           </Box>
 
-          <SpecialityMenu />
+          <Stack sx={{ justifyContent: "center" }}>
+            <SpecialityMenu />
+          </Stack>
+
           <LatestAppointment />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} sm={4}>
           <RigthSideProfile />
         </Grid>
       </Grid>

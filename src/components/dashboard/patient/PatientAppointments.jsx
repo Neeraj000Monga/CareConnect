@@ -158,8 +158,13 @@ const PatientAppointments = () => {
             {item?.myappointments?.map((appointment, i) => (
               <Card sx={{ p: 2 }} key={i}>
                 <Stack
+                  sx={(theme) => ({
+                    flexDirection: "column",
+                    [theme.breakpoints.up("sm")]: {
+                      flexDirection: "row",
+                    },
+                  })}
                   gap={2}
-                  flexDirection="row"
                   justifyContent="space-between"
                 >
                   <Stack
@@ -176,11 +181,11 @@ const PatientAppointments = () => {
                       src={appointment?.profilePic}
                       alt={appointment?.doctorName || "Doctor"}
                       sx={{
-                        backgroundColor: "#f0f0ff",
-                        borderRadius: 2,
-                        maxWidth: "210px",
                         height: "210px",
-                        objectFit: "cover",
+                        borderRadius: 2,
+                        objectFit: "initial",
+                        backgroundColor: "#f0f0ff",
+                        maxWidth: { xs: "100%", sm: "210px" },
                       }}
                     />
 

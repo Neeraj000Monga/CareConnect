@@ -22,7 +22,7 @@ const LatestAppointment = () => {
         width: "100%",
         display: "flex",
         paddingTop: "15px",
-        marginLeft:'12px',
+        marginLeft: {xs: "0px", sm: "12px"},
         maxWidth: "350px",
        
       }}

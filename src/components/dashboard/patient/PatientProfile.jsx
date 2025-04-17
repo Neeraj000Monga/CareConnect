@@ -157,12 +157,16 @@ const PatientProfile = () => {
           </Box>
         )}
 
-        <Box
-          sx={{
+        <Stack
+          sx={(theme) => ({
+            gap: "10px",
             width: "100%",
-            display: "flex",
+            flexDirection: "column",
             justifyContent: "space-between",
-          }}
+            [theme.breakpoints.up("sm")]: {
+              flexDirection: "row",
+            },
+          })}
         >
           <Box>
             {isEdit ? (
@@ -182,19 +186,19 @@ const PatientProfile = () => {
           </Box>
 
           <Button
-            variant="outlined"
             sx={{
               px: 2,
-              py: 1,
+              width: "fit-content",
               borderRadius: 10,
-              borderColor: "primary.main",
               textTransform: "none",
+              borderColor: "primary.main",
             }}
+            variant="outlined"
             onClick={isEdit ? handleSave : () => setIsEdit(true)}
           >
             {isEdit ? "Save Information" : "Edit"}
           </Button>
-        </Box>
+        </Stack>
       </Box>
 
       {/* Information Sections */}
