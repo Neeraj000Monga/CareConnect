@@ -25,8 +25,6 @@ function Login() {
     (state) => state.login
   );
 
-
-
   useEffect(() => {
     if (user) {
       const userRole = localStorage.getItem("userRole");
@@ -71,7 +69,14 @@ function Login() {
           textAlign: "center",
         }}
       >
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: theme.palette.mode === "dark" ? "#00888e" : "#374151" }}>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          gutterBottom
+          sx={{
+            color: theme.palette.mode === "dark" ? "#00888e" : "#374151",
+          }}
+        >
           Login
         </Typography>
 
@@ -97,7 +102,11 @@ function Login() {
             required
           />
 
-          <Typography variant="body2" fontWeight="bold" sx={{ mt: 2, mb: 0.5 }}>
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            sx={{ mt: 2, mb: 0.5 }}
+          >
             Password
           </Typography>
           <TextField
@@ -111,23 +120,22 @@ function Login() {
             onKeyDown={handleKeyDown}
             required
           />
-
         </Box>
         <Button
-            fullWidth
-            variant="contained"
-            sx={{
-              mt: 3,
-              width: "200px",
-              color: "#fff",
-              background: "#000",
-              "&:hover": { backgroundColor: "#000000e0" },
-            }}
-            onClick={handleLogin}
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </Button>
+          fullWidth
+          variant="contained"
+          sx={{
+            mt: 3,
+            width: "200px",
+            color: "#fff",
+            background: "#000",
+            "&:hover": { backgroundColor: "#000000e0" },
+          }}
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </Button>
 
         <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
           Don't have an account?
@@ -143,7 +151,6 @@ function Login() {
                 textDecoration: "underline",
               },
             }}
-
             onClick={() => navigate("/register")}
           >
             Signup
@@ -155,3 +162,4 @@ function Login() {
 }
 
 export default Login;
+

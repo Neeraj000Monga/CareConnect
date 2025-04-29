@@ -6,7 +6,6 @@ export const loginUser = createAsyncThunk(
   "login/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      // Fetch both Patient & Doctor lists
       const patientsRes = await axios.get(
         "https://67d826719d5e3a10152d9ddf.mockapi.io/CareConnect/Patient"
       );
@@ -17,13 +16,14 @@ export const loginUser = createAsyncThunk(
       const patients = patientsRes.data;
       const doctors = doctorsRes.data;
 
-      // Find user in patients list
-      const user =
-        patients.find((u) => u.email === email && u.password === password) ||
-        doctors.find((u) => u.email === email && u.password === password);
+      const patient = patients.find((u) => u.email === email && u.password === password);
+      const doctor = doctors.find((u) => u.email === email && u.password === password);
+
+      const user = patient || doctor;
 
       if (user) {
-        localStorage.setItem("user2", JSON.stringify(user?.id));
+        localStorage.setItem("user2", JSON.stringify(user.id));
+        localStorage.setItem("userRole", patient ? "patient" : "doctor");
         return user;
       } else {
         return rejectWithValue("Invalid email or password.");
@@ -34,7 +34,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Slice to handle login-related state
 const loginSlice = createSlice({
   name: "login",
   initialState: {
@@ -61,6 +60,7 @@ const loginSlice = createSlice({
       state.user = null;
       state.loading = false;
       localStorage.removeItem("user2");
+      localStorage.removeItem("userRole"); // clear on logout
     },
   },
   extraReducers: (builder) => {
@@ -80,8 +80,6 @@ const loginSlice = createSlice({
   },
 });
 
-// Export actions
-export const { setEmail, setPassword, clearError,logout } = loginSlice.actions;
+export const { setEmail, setPassword, clearError, logout } = loginSlice.actions;
 
-// Export reducer to be used in the store
 export default loginSlice.reducer;
