@@ -11,7 +11,6 @@ import {
   Card,
   useTheme,
 } from "@mui/material";
-import ProfilePic from "../../../assets/profile_pic.png";
 import EditIcon from "@mui/icons-material/Edit";
 import { Alerts } from "../../../style/Alert";
 import Loader from "../../../Loader";
@@ -28,8 +27,8 @@ const PatientProfile = () => {
 
   const storedUser = JSON.parse(localStorage.getItem("user2"));
 
-  console.log("storedUser:", storedUser);
-  console.log("patientData:", patientData);
+  console.log("storedUserID:", storedUser);
+  console.log("patientData2:", patientData);
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -85,7 +84,7 @@ const PatientProfile = () => {
       }
 
       const updatedData = await response.json();
-      setPatientData(updatedData); // Update state with saved data
+      setPatientData(updatedData); 
       setIsEdit(false);
       setShowAlert(true);
     } catch (err) {
@@ -139,7 +138,7 @@ const PatientProfile = () => {
                     />
                   </Box>
                   <Avatar
-                    src={patientData?.profilePic || ProfilePic}
+                    src={patientData?.profilePic}
                     alt="Profile"
                     sx={{
                       width: 100,
@@ -154,7 +153,7 @@ const PatientProfile = () => {
             ) : (
               <Box>
                 <Avatar
-                  src={patientData?.profilePic || ProfilePic}
+                  src={patientData?.profilePic}
                   alt="Profile"
                   sx={{
                     width: 100,

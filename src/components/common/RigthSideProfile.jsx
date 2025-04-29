@@ -22,7 +22,7 @@ const RightSideProfile = () => {
   }, []);
 
   if (!profile) {
-    return <Typography>Loading...</Typography>;
+    return <Typography sx={{ p: 2 }}>Loading...</Typography>;
   }
 
   return (
@@ -36,7 +36,7 @@ const RightSideProfile = () => {
         {/* Profile Section */}
         <Stack sx={{ mt: 1, alignItems: "center" }}>
           <img
-            src={profile?.image || doc13}
+            src={profile?.profilePic}
             alt="Profile"
             style={{
               width: 80,
