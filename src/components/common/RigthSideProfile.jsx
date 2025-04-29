@@ -15,14 +15,11 @@ const alerts = [
 const RightSideProfile = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.user);
-  const status = useSelector((state) => state.profile.status);
   const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchUserProfile());
-    }
-  }, [dispatch, status]);
+    dispatch(fetchUserProfile());
+  }, []);
 
   if (!profile) {
     return <Typography>Loading...</Typography>;
@@ -42,10 +39,11 @@ const RightSideProfile = () => {
             src={profile?.image || doc13}
             alt="Profile"
             style={{
-              borderRadius: "50%",
-              height: 80,
               width: 80,
+              height: 80,
               objectFit: "cover",
+              borderRadius: "50%",
+              background: "aliceblue"
             }}
           />
           <Typography fontWeight="bold">{profile.name}</Typography>
