@@ -27,9 +27,6 @@ const PatientProfile = () => {
 
   const storedUser = JSON.parse(localStorage.getItem("user2"));
 
-  console.log("storedUserID:", storedUser);
-  console.log("patientData2:", patientData);
-
   useEffect(() => {
     const fetchPatientData = async () => {
       if (!storedUser) {
@@ -46,7 +43,6 @@ const PatientProfile = () => {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        console.log("Fetched patient data:", data); // Debugging
         setPatientData(data);
       } catch (err) {
         setError(err.message);

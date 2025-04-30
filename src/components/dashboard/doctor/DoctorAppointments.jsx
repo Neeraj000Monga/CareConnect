@@ -10,8 +10,6 @@ const DoctorAppointments = () => {
   const storedUser = JSON.parse(localStorage.getItem("user2"));
   const userId = storedUser; // Assuming userId is the same as doctor id
 
-  console.log("userId", userId);
-
   useEffect(() => {
     const fetchPatient = async () => {
       if (!userId) {

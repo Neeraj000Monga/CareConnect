@@ -43,13 +43,10 @@ const AvailableDoctors = () => {
   }, [dispatch]);
 
   const handleClick = (id) => {
-    console.log("Doctor ID:", id);
     dispatch(setSelectedDoctorId(id));
     navigate("/patient/bookAppointments");
   };
 
-  console.log("doctors", doctors);
-  console.log("selectedSpecialty", selectedSpecialty);
 
   const filteredDoctors =
     selectedSpecialty === "All Doctors"

@@ -201,8 +201,6 @@ const BookAppointment = () => {
 
       if (!patientUpdateResponse.ok)
         throw new Error("Failed to book appointment for patient");
-
-      console.log("Appointment booked successfully for doctor and patient!");
       setConfirmed(true);
       dispatch(toggleAlert());
     } catch (error) {

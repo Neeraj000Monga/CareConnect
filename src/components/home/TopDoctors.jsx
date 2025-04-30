@@ -14,8 +14,6 @@ const TopDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [doctorCount, setDoctorCount] = useState(6);
 
-  console.log("doctors", doctors)
-
   useEffect(() => {
     const fetchDoctors = async () => {
       try {

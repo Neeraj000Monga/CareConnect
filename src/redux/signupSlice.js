@@ -13,7 +13,6 @@ export const signupUser = createAsyncThunk(
 
       // Convert formData to a JSON object
       const formDataToSend = { ...formData };
-      console.log("formDataToSend", formDataToSend);
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -24,7 +23,6 @@ export const signupUser = createAsyncThunk(
       });
 
       const responseData = await response.json();
-      console.log("Response:", responseData); 
 
       if (!response.ok) {
         throw new Error(responseData?.message || "Signup failed");

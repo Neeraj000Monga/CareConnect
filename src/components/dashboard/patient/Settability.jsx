@@ -54,15 +54,12 @@ const Settability = () => {
   const { activeDay, activeSlots, showAlert, currentMonth, currentYear } =
     useSelector((state) => state.bookapointment);
 
-  console.log("activeSlots", activeSlots);
-  console.log("currentDate", currentDate);
-  console.log("activeDay", activeDay);
 
   useEffect(() => {
     const daysInNewMonth = getDaysInMonth(currentMonth, currentYear);
 
     if (activeDay > daysInNewMonth) {
-      dispatch(setActiveDay(null)); // Reset if out of range
+      dispatch(setActiveDay(null)); 
     }
 
     setCurrentDate(today.getDate());

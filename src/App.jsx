@@ -29,7 +29,6 @@ function App() {
     return storedMode === "true";
   });
 
-  console.log("mode", mode)
 
   const hadleToggleSwitch = () => {
     if (!mode) {
