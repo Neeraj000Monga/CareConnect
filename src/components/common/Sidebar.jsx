@@ -37,9 +37,9 @@ const openedMixin = (theme) => ({
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
+  color: "#000",
   overflowX: "hidden",
   backgroundColor: "#fff",
-  color: "#000",
 });
 
 const closedMixin = (theme) => ({
@@ -52,8 +52,8 @@ const closedMixin = (theme) => ({
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(7)} + 1px)`,
   },
-  backgroundColor: "#fff",
   color: "#000",
+  backgroundColor: "#fff",
 });
 
 const Drawer = styled(MuiDrawer, {
@@ -248,9 +248,9 @@ const Sidebar = ({ isOpen, toggleSidebar, hadleToggleSwitch }) => {
               top: "65px",
               height: "90vh",
               display: "flex",
-              background: theme.palette.mode === "dark" ? "#212121" : "#fff",
               flexDirection: "column",
               justifyContent: "space-between",
+              background: theme.palette.mode === "dark" ? "#212121" : "#fff",
             },
           }}
         >
@@ -266,8 +266,15 @@ const Sidebar = ({ isOpen, toggleSidebar, hadleToggleSwitch }) => {
                     justifyContent: open ? "initial" : "center",
                     color: location.pathname === item.path ? "#000b6d" : "#000",
                     borderRight: location.pathname === item.path ? "4px solid #2F54EB" : "none",
-                    backgroundColor: location.pathname === item.path ? (theme.palette.mode === "dark" ? "#525252" : "#eaecfb") : "transparent",
-                    "&:hover": { backgroundColor: theme.palette.mode === "dark" ? " #464545" : "#e2e5ff" },
+                    backgroundColor:
+                      location.pathname === item.path
+                        ? theme.palette.mode === "dark"
+                          ? "#373838"
+                          : "#eaecfb"
+                        : "transparent",
+                    "&:hover": {
+                      backgroundColor: theme.palette.mode === "dark" ? "#464545" : "#e2e5ff",
+                    },
                   }}
                 >
                   <ListItemIcon
@@ -275,21 +282,23 @@ const Sidebar = ({ isOpen, toggleSidebar, hadleToggleSwitch }) => {
                       minWidth: 0,
                       mr: open ? 2 : "auto",
                       justifyContent: "center",
-                      color: location.pathname === item.path ? "#4486ff" : theme.palette.mode === "dark" ? "#fff" : "#000",
+                      color: location?.pathname === item?.path ? theme.palette.mode === "dark" ? "#80bfff" : "#1d66ba" : theme.palette.mode === "dark" ? "#fff" : "#000",
                     }}
-
                   >
-                    {item.icon}
+                    {item?.icon}
                   </ListItemIcon>
+
                   <ListItemText
-                    primary={item.name}
+                    primary={item?.name}
                     sx={{
                       opacity: open ? 1 : 0,
-                      color: location.pathname === item.path ? "#4486ff" : theme.palette.mode === "dark" ? "#fff" : "#000",
+                      color: location?.pathname === item?.path ? theme.palette.mode === "dark" ? "#80bfff" : "#0058bd" : theme.palette.mode === "dark" ? "#fff" : "#000"
                     }}
+                    primaryTypographyProps={{ fontWeight: location?.pathname === item?.path ? "bold" : "normal"}}
                   />
                 </ListItemButton>
               </ListItem>
+
             ))}
           </List>
         </Drawer>

@@ -1,4 +1,5 @@
 import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import { NavLink } from "react-router-dom";
@@ -6,7 +7,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 import ToggleSwitch from "../../components/ToggleSwitch"
 import CareConnectLogo from '../../assets/CareConnectLogo.png'
-import { useTheme } from "@mui/material";
 
 function NavBar({ hadleToggleSwitch }) {
   const theme = useTheme();
@@ -26,7 +26,7 @@ function NavBar({ hadleToggleSwitch }) {
       <Container maxWidth="xl" sx={{ paddingRight: "0px !important", }}>
         <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
           {/* Logo and Brand Name */}
-          <Box component="img" src={CareConnectLogo} alt="CareConnect Logo" sx={{ width: 200 }} />
+          <Box component="img" src={CareConnectLogo} alt="CareConnect Logo" sx={{ width: 200, filter: theme.palette.mode === "dark" && "brightness(3)" }} />
 
           <Box sx={{ display: "flex", alignItems: "center", gap: "30px" }}>
             {["/", "/about", "/contact"].map((path, index) => {

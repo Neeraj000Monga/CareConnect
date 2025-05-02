@@ -60,7 +60,7 @@ const loginSlice = createSlice({
       state.user = null;
       state.loading = false;
       localStorage.removeItem("user2");
-      localStorage.removeItem("userRole"); // clear on logout
+      localStorage.removeItem("userRole");
     },
   },
   extraReducers: (builder) => {
